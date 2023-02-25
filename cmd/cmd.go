@@ -99,7 +99,7 @@ func Start(name string, args []string, outC, errC chan<- string, inC <-chan stri
 		return
 	}
 	if fn := startedFunc; fn != nil {
-		go fn(outCmd)
+		fn(outCmd)
 	}
 	err = outCmd.Wait()
 	return

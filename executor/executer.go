@@ -9,12 +9,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cmdexecutor
+package executor
 
 import (
 	"errors"
-	"github.com/whrwsoftware/panelbase/cmd"
-	"os/exec"
 	"sync"
 	"time"
 )
@@ -25,58 +23,24 @@ var (
 
 type (
 	Executor struct {
-		steps      []*Step
-		killed     bool
-		async      bool
-		outC, errC chan<- string
+		steps  []*Step
+		killed bool
+		async  bool
+
+		outC, errC chan<- Message
 	}
 )
 
 func NewExecutor(async bool) *Executor { return &Executor{steps: make([]*Step, 0), async: async} }
 
+func (etr *Executor) Chan(outC, errC chan<- Message) {
+	etr.outC = outC
+	etr.errC = errC
+}
+
 func (etr *Executor) NextId() int { return len(etr.steps) + 1 }
 
-func (etr *Executor) Create(cmd string, args []string, passCheckFunc func() bool) {
-	etr.Add(NewStep(etr.NextId(), cmd, args, passCheckFunc))
-}
-
-func (etr *Executor) kill(step *Step) (err error) { return step.kill() }
-
-func (etr *Executor) start(step *Step) (err error) {
-	var (
-		outC = make(chan string, 1)
-		errC = make(chan string, 1)
-	)
-	go func() {
-		for {
-			if outStr, ok := <-outC; !ok {
-				break
-			} else {
-				etr.outC <- step.logPrefix() + " " + outStr
-			}
-		}
-	}()
-	go func() {
-		for {
-			if errStr, ok := <-errC; !ok {
-				break
-			} else {
-				etr.errC <- step.logPrefix() + " " + errStr
-			}
-		}
-	}()
-	err = cmd.Start(step.name, step.args, outC, errC, nil, func(outCmd *exec.Cmd) {
-		step.cmd = outCmd
-		step.started = true
-	})
-	step.finished = true
-	step.success = err == nil
-	step.passed = step.success
-	if fn := step.passCheckFunc; fn != nil {
-		step.passed = fn()
-	}
-	return
-}
+func (etr *Executor) Create(cmd string, args ...string) { etr.Add(NewStep(etr.NextId(), cmd, args...)) }
 
 func (etr *Executor) Add(step *Step) {
 	if step != nil {
@@ -86,7 +50,7 @@ func (etr *Executor) Add(step *Step) {
 
 func (etr *Executor) Clear() { etr.steps = make([]*Step, 0) }
 
-func (etr *Executor) startAsync() (err error) {
+func (etr *Executor) execAsync() (err error) {
 	var (
 		nextCh   = make(chan struct{}, 1)
 		outErrCh = make(chan error, 1)
@@ -98,10 +62,9 @@ func (etr *Executor) startAsync() (err error) {
 		)
 		wg.Add(len(etr.steps))
 		go func() {
-			if v, ok := <-errCh; ok {
-				nextCh <- struct{}{}
-				outErrCh <- v
-			}
+			v, _ := <-errCh
+			nextCh <- struct{}{}
+			outErrCh <- v
 		}()
 		go func() {
 			for {
@@ -115,7 +78,7 @@ func (etr *Executor) startAsync() (err error) {
 		for _, step := range etr.steps {
 			go func(step *Step, errCh chan<- error) {
 				defer wg.Done()
-				if sErr := etr.start(step); sErr != nil {
+				if sErr := step.Start(etr.outC, etr.errC); sErr != nil {
 					errCh <- sErr
 					close(errCh)
 				}
@@ -132,9 +95,9 @@ func (etr *Executor) startAsync() (err error) {
 	return
 }
 
-func (etr *Executor) startSync() (err error) {
+func (etr *Executor) execSync() (err error) {
 	for _, step := range etr.steps {
-		if err = etr.start(step); err != nil {
+		if err = step.Start(etr.outC, etr.errC); err != nil {
 			return
 		}
 		if etr.killed {
@@ -144,21 +107,36 @@ func (etr *Executor) startSync() (err error) {
 	return
 }
 
-func (etr *Executor) Start() (err error) {
+func (etr *Executor) Exec() (err error) {
 	if len(etr.steps) == 0 {
 		return ErrStepsEmpty
 	}
 
 	if etr.async {
-		return etr.startAsync()
+		return etr.execAsync()
 	}
 
-	return etr.startSync()
+	err = etr.execSync()
+	if etr.outC != nil {
+		close(etr.outC)
+	}
+	if etr.errC != nil {
+		close(etr.errC)
+	}
+	return
 }
 
 func (etr *Executor) Kill() {
-	etr.killed = true
-	for _, step := range etr.steps {
-		_ = etr.kill(step)
+	if !etr.killed {
+		for _, step := range etr.steps {
+			_ = step.Kill()
+		}
+		etr.killed = true
+		if etr.outC != nil {
+			close(etr.outC)
+		}
+		if etr.errC != nil {
+			close(etr.errC)
+		}
 	}
 }

@@ -25,16 +25,16 @@ func TestRun(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		wantOuts []byte
-		wantErrs []byte
+		wantOuts string
+		wantErrs string
 		wantErr  bool
 	}{
-		{"test_echo_empty", args{"goecho", []string{""}}, []byte("\n"), []byte{}, false},
-		{"test_echo_warp", args{"goecho", []string{"\n"}}, []byte("\n\n"), []byte{}, false},
-		{"test_echo_args", args{"goecho", []string{"123"}}, []byte("123\n"), []byte{}, false},
-		{"test_echo_args_list", args{"goecho", []string{"123", "456"}}, []byte("123 456\n"), []byte{}, false},
-		{"test_echo_args_list2", args{"goecho", []string{"123", "456", "789"}}, []byte("123 456 789\n"), []byte{}, false},
-		{"test_echo_err", args{"goechox", []string{}}, nil, nil, true},
+		{"test_echo_empty", args{"goecho", []string{""}}, "\n", "", false},
+		{"test_echo_warp", args{"goecho", []string{"\n"}}, "\n\n", "", false},
+		{"test_echo_args", args{"goecho", []string{"123"}}, "123\n", "", false},
+		{"test_echo_args_list", args{"goecho", []string{"123", "456"}}, "123 456\n", "", false},
+		{"test_echo_args_list2", args{"goecho", []string{"123", "456", "789"}}, "123 456 789\n", "", false},
+		{"test_echo_err", args{"goechox", []string{}}, "", "", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
