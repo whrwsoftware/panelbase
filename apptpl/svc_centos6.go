@@ -9,66 +9,69 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package centos
+package apptpl
 
-type Template6 struct {
-	Name, ServiceName string
-	RegisterService   bool
-	PreCheck          bool
-	PreCheckFunc      func() (ok bool, err error)
+type CentOSSvcTemplate struct {
+	Name            string
+	ServiceName     string
+	RegisterService bool
+	PreCheck        bool
+	PreCheckFunc    func() (ok bool, err error)
 }
 
-func (t *Template6) Check() (ok bool, err error) {
+func (c *CentOSSvcTemplate) Check() (ok bool, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Enable() (ok bool, err error) {
+func (c *CentOSSvcTemplate) ServiceInstall() (ok bool, err error) { return true, nil }
+
+func (c *CentOSSvcTemplate) Enable() (ok bool, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Disable() (ok bool, err error) {
+func (c *CentOSSvcTemplate) Disable() (ok bool, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Install() (ok bool, err error) {
+func (c *CentOSSvcTemplate) Install() (ok bool, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Uninstall() (ok bool, err error) {
+func (c *CentOSSvcTemplate) Uninstall() (ok bool, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Configure(data any) (err error) {
+func (c *CentOSSvcTemplate) Configure(cfg Cfg) (err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Start() (ok bool, err error) {
+func (c *CentOSSvcTemplate) Start() (ok bool, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Stop() (ok bool, err error) {
+func (c *CentOSSvcTemplate) Stop() (ok bool, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Restart() (ok bool, err error) {
+func (c *CentOSSvcTemplate) Restart() (ok bool, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Status() (s string, err error) {
+func (c *CentOSSvcTemplate) Status() (s string, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *Template6) Ver() (v string, err error) {
+func (c *CentOSSvcTemplate) Version() (v string, err error) {
 	//TODO implement me
 	panic("implement me")
 }

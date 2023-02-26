@@ -9,6 +9,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package archlinux
+package apptpl
 
-type Template struct{}
+type Web interface {
+	Precondition
+	Installer
+	Uninstaller
+	Configurator
+	Starter
+	Stopper
+	Restarter
+	Version
+}

@@ -9,6 +9,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package centos
+package apptplconf
 
-type Template7 struct{}
+import (
+	"bytes"
+	"embed"
+	"os"
+	"text/template"
+)
+
+func Gen(fs embed.FS, name string, dist string, data any, perm os.FileMode) (err error) {
+	data, fErr := fs.ReadFile(name)
+	if fErr != nil {
+		return fErr
+	}
+	buf := bytes.NewBufferString("")
+	if err = template.New("").Execute(buf, data); err != nil {
+		return
+	}
+	err = os.WriteFile(dist, buf.Bytes(), perm)
+	return
+}

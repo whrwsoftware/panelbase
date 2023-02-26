@@ -9,19 +9,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cmd
+package apptpl
 
-import "github.com/whrwsoftware/panelbase/app"
+type service struct{ Name string }
 
-type Starter interface{ Start(v string) (err error) }
+func (s *service) ServiceInstall() (ok bool, err error) {
+	//TODO implement me
+	panic("implement me")
+}
 
-type Cmder interface {
-	app.Precondition
-	app.Installer
-	app.Uninstaller
-	app.Configurator
-	Starter
-	app.Stopper
-	app.Restarter
-	app.Version
+func (s *service) Enable() (ok bool, err error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *service) Disable() (ok bool, err error) {
+	//TODO implement me
+	panic("implement me")
 }

@@ -11,11 +11,16 @@
 
 package postfix
 
-import (
-	"github.com/whrwsoftware/panelbase/app/svc"
-	"github.com/whrwsoftware/panelbase/zvars/oss"
-)
+import "github.com/whrwsoftware/panelbase/apptpl"
 
-var templates = map[string]svc.Service{
-	oss.CentOS6: CentOS6Postfix,
-}
+var (
+	CentOSPostfix = &apptpl.CentOSSvcTemplate{
+		Name:            "postfix",
+		ServiceName:     "postfix",
+		RegisterService: true,
+		PreCheck:        true,
+		PreCheckFunc: func() (ok bool, err error) {
+			return false, nil
+		},
+	}
+)

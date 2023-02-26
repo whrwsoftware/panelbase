@@ -9,17 +9,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package web
+package cmds
 
-import "github.com/whrwsoftware/panelbase/app"
+import "github.com/whrwsoftware/panelbase/cmd"
 
-type Web interface {
-	app.Precondition
-	app.Installer
-	app.Uninstaller
-	app.Configurator
-	app.Starter
-	app.Stopper
-	app.Restarter
-	app.Version
+func run(n string, v ...string) (out string, err error) { out, _, err = cmd.Run(n, v...); return }
+func start(n string, v []string, outC, errC chan<- string) (err error) {
+	return cmd.Start(n, v, outC, errC, nil, nil)
 }

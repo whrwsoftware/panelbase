@@ -9,4 +9,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package dovecot
+package apptpl
+
+type systemctl struct{ Name string }
+
+func (s *systemctl) Systemd() (ok bool, err error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *systemctl) Enable() (ok bool, err error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *systemctl) Disable() (ok bool, err error) {
+	//TODO implement me
+	panic("implement me")
+}

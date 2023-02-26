@@ -9,18 +9,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package dovecot
+package initd
 
-import "github.com/whrwsoftware/panelbase/app/svc/templates/centos"
-
-var (
-	CentOS6Dovecot = &centos.Template6{
-		Name:            "dovecot",
-		ServiceName:     "dovecot",
-		RegisterService: true,
-		PreCheck:        true,
-		PreCheckFunc: func() (ok bool, err error) {
-			return false, nil
-		},
-	}
+import (
+	"embed"
+	"github.com/whrwsoftware/panelbase/apptplconf"
 )
+
+//go:embed bash.sh
+var fs embed.FS
+
+const initDRoot = "/etc/init.d/"
+
+type Args struct {
+	App     string
+	Command string
+	Option  string
+	PidFile string
+	LogFile string
+}
+
+func InitD(a Args) (err error) { return apptplconf.Gen(fs, "bash.sh", initDRoot+a.App, a, 0700) }

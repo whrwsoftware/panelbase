@@ -9,4 +9,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cli
+package postfix
+
+import (
+	"embed"
+	"github.com/whrwsoftware/panelbase/apptplconf"
+)
+
+//go:embed main.cf
+var fs embed.FS
+
+const mainCfDist = "/etc/postfix/main.cf"
+
+type Args struct {
+	MyHostname string
+	MyDomain   string
+	MyOrigin   string
+}
+
+func MainCf(a Args) (err error) { return apptplconf.Gen(fs, "main.cf", mainCfDist, a, 0600) }

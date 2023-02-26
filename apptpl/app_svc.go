@@ -9,6 +9,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package debian
+package apptpl
 
-type Template struct{}
+type Service interface {
+	Precondition
+	ServiceInstaller
+	ServiceEnabler
+	ServiceDisabler
+	Installer
+	Uninstaller
+	Configurator
+	Starter
+	Stopper
+	Restarter
+	Status
+	Version
+}

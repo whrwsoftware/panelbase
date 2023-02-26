@@ -9,18 +9,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package postfix
-
-import "github.com/whrwsoftware/panelbase/app/svc/templates/centos"
-
-var (
-	CentOS6Postfix = &centos.Template6{
-		Name:            "postfix",
-		ServiceName:     "postfix",
-		RegisterService: true,
-		PreCheck:        true,
-		PreCheckFunc: func() (ok bool, err error) {
-			return false, nil
-		},
-	}
-)
+package common
