@@ -13,9 +13,9 @@ package cmds
 
 type service struct{ name string }
 
-func Service(name string) *service                  { return &service{name} }
-func service0(v ...string) (out string, err error)  { return run("service", v...) }
-func (s *service) Start() (out string, err error)   { return service0("start", s.name) }
-func (s *service) Stop() (out string, err error)    { return service0("stop", s.name) }
-func (s *service) Restart() (out string, err error) { return service0("restart", s.name) }
-func (s *service) Status() (out string, err error)  { return service0("status", s.name) }
+func Service(name string) *service                           { return &service{name} }
+func service0(v ...string) (out string, ok bool, err error)  { return run("service", v...) }
+func (s *service) Start() (out string, ok bool, err error)   { return service0("start", s.name) }
+func (s *service) Stop() (out string, ok bool, err error)    { return service0("stop", s.name) }
+func (s *service) Restart() (out string, ok bool, err error) { return service0("restart", s.name) }
+func (s *service) Status() (out string, ok bool, err error)  { return service0("status", s.name) }

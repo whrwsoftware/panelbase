@@ -9,22 +9,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package postfix
+package initd
 
 import (
 	"embed"
-	"github.com/whrwsoftware/panelbase/apptplconf"
+	"github.com/whrwsoftware/panelbase/appconf"
 )
 
-//go:embed main.cf
+//go:embed bash.sh
 var fs embed.FS
 
-const mainCfDist = "/etc/postfix/main.cf"
+const initDRoot = "/etc/init.d/"
 
 type Args struct {
-	MyHostname string
-	MyDomain   string
-	MyOrigin   string
+	App     string
+	Command string
+	Option  string
+	PidFile string
+	LogFile string
 }
 
-func MainCf(a Args) (err error) { return apptplconf.Gen(fs, "main.cf", mainCfDist, a, 0600) }
+func InitD(a Args) (err error) { return appconf.Gen(fs, "bash.sh", initDRoot+a.App, a, 0700) }

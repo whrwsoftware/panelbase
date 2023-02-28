@@ -9,24 +9,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package initd
+package app
 
-import (
-	"embed"
-	"github.com/whrwsoftware/panelbase/apptplconf"
-)
+type Cfg = Configuration
 
-//go:embed bash.sh
-var fs embed.FS
-
-const initDRoot = "/etc/init.d/"
-
-type Args struct {
-	App     string
-	Command string
-	Option  string
-	PidFile string
-	LogFile string
+type Configuration struct {
+	Name string
+	Conf map[string]string
 }
-
-func InitD(a Args) (err error) { return apptplconf.Gen(fs, "bash.sh", initDRoot+a.App, a, 0700) }

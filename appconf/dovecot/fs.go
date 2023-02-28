@@ -13,7 +13,7 @@ package postfix
 
 import (
 	"embed"
-	"github.com/whrwsoftware/panelbase/apptplconf"
+	"github.com/whrwsoftware/panelbase/appconf"
 )
 
 //go:embed dovecot.conf conf.d/10-auth.conf conf.d/10-mail.conf conf.d/10-master.conf
@@ -33,17 +33,17 @@ type Args struct {
 }
 
 func DovecotConf(a Args) (err error) {
-	return apptplconf.Gen(fs, "dovecot.conf", dovecotConfDist, a, 0600)
+	return appconf.Gen(fs, "dovecot.conf", dovecotConfDist, a, 0600)
 }
 
 func ConfD10Auth() (err error) {
-	return apptplconf.Gen(fs, "conf.d/10-auth.conf", confD10AuthDist, nil, 0600)
+	return appconf.Gen(fs, "conf.d/10-auth.conf", confD10AuthDist, nil, 0600)
 }
 
 func ConfD10Mail() (err error) {
-	return apptplconf.Gen(fs, "conf.d/10-mail.conf", confD10MailDist, nil, 0600)
+	return appconf.Gen(fs, "conf.d/10-mail.conf", confD10MailDist, nil, 0600)
 }
 
 func ConfD10Master() (err error) {
-	return apptplconf.Gen(fs, "conf.d/10-master.conf", confD10MasterDist, nil, 0600)
+	return appconf.Gen(fs, "conf.d/10-master.conf", confD10MasterDist, nil, 0600)
 }

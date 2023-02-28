@@ -38,7 +38,7 @@ func TestRun(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotOuts, gotErrs, err := Run(tt.args.name, tt.args.args...)
+			gotOuts, gotErrs, _, err := Run(tt.args.name, tt.args.args...)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Run() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -76,7 +76,7 @@ func TestStart(t *testing.T) {
 		<-time.After(time.Second * 5)
 		inC <- "qqq"
 	}()
-	if err = Start("goscan", []string{}, outC, nil, inC, nil); err != nil {
+	if _, err = Start("goscan", []string{}, outC, nil, inC, nil); err != nil {
 		t.Error(err)
 	}
 }

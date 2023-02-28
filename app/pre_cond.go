@@ -9,32 +9,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package apptpl
+package app
 
 import (
 	"fmt"
 	"strings"
 )
-
-type ServiceInstaller interface{ ServiceInstall() (ok bool, err error) }
-type ServiceEnabler interface{ Enable() (ok bool, err error) }
-type ServiceDisabler interface{ Disable() (ok bool, err error) }
-type Precondition interface{ Check() (ok bool, err error) }
-type Installer interface{ Install() (ok bool, err error) }
-type Uninstaller interface{ Uninstall() (ok bool, err error) }
-type Configurator interface{ Configure(c Cfg) (err error) }
-type Starter interface{ Start() (ok bool, err error) }
-type Stopper interface{ Stop() (ok bool, err error) }
-type Restarter interface{ Restart() (ok bool, err error) }
-type Status interface{ Status() (s string, err error) }
-type Version interface{ Version() (v string, err error) }
-
-type Cfg = Configuration
-
-type Configuration struct {
-	Name string
-	Conf map[string]string
-}
 
 type ErrPreCond struct {
 	items []ErrPreCondItem

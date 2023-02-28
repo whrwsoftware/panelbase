@@ -13,14 +13,16 @@ package cmds
 
 type yum struct{}
 
-func Yum() *yum                                             { return &yum{} }
-func yum0(v ...string) (out string, err error)              { return run("yum", v...) }
-func yum1(v []string, outC, errC chan<- string) (err error) { return start("yum", v, outC, errC) }
-func (y *yum) Version() (out string, err error)             { return yum0("--version") }
-func (y *yum) Search(v string) (out string, err error)      { return yum0("search", v) }
-func (y *yum) Install(v string, outC, errC chan<- string) (err error) {
-	return yum1([]string{"install -y", v}, outC, errC)
+func Yum() *yum                                         { return &yum{} }
+func yum0(v ...string) (out string, ok bool, err error) { return run("yum", v...) }
+func yum1(v []string, outC, errC chan<- string) (ok bool, err error) {
+	return start("yum", v, outC, errC)
 }
-func (y *yum) Uninstall(v string, outC, errC chan<- string) (err error) {
-	return yum1([]string{"uninstall -y", v}, outC, errC)
+func (y *yum) Version() (out string, ok bool, err error)        { return yum0("--version") }
+func (y *yum) Search(v string) (out string, ok bool, err error) { return yum0("search", v) }
+func (y *yum) Install(v string, outC, errC chan<- string) (ok bool, err error) {
+	return yum1([]string{"install", "-y", v}, outC, errC)
+}
+func (y *yum) Uninstall(v string, outC, errC chan<- string) (ok bool, err error) {
+	return yum1([]string{"remove", "-y", v}, outC, errC)
 }

@@ -13,14 +13,16 @@ package cmds
 
 type apt struct{}
 
-func Apt(unit string) *apt                                  { return &apt{} }
-func apt0(v ...string) (out string, err error)              { return run("apt", v...) }
-func apt1(v []string, outC, errC chan<- string) (err error) { return start("apt", v, outC, errC) }
-func (a *apt) Version() (out string, err error)             { return apt0("--version") }
-func (a *apt) Search(v string) (out string, err error)      { return apt0("search", v) }
-func (a *apt) Install(v string, outC, errC chan<- string) (err error) {
+func Apt(unit string) *apt                              { return &apt{} }
+func apt0(v ...string) (out string, ok bool, err error) { return run("apt", v...) }
+func apt1(v []string, outC, errC chan<- string) (ok bool, err error) {
+	return start("apt", v, outC, errC)
+}
+func (a *apt) Version() (out string, ok bool, err error)        { return apt0("--version") }
+func (a *apt) Search(v string) (out string, ok bool, err error) { return apt0("search", v) }
+func (a *apt) Install(v string, outC, errC chan<- string) (ok bool, err error) {
 	return apt1([]string{"install -y", v}, outC, errC)
 }
-func (a *apt) Uninstall(v string, outC, errC chan<- string) (err error) {
+func (a *apt) Uninstall(v string, outC, errC chan<- string) (ok bool, err error) {
 	return apt1([]string{"uninstall -y", v}, outC, errC)
 }

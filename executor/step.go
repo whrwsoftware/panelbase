@@ -39,14 +39,14 @@ func NewStep(id int, name string, args ...string) *Step {
 
 func (s *Step) logPrefix() string { return fmt.Sprintf("[%d,%s \"%s\"]", s.id, s.cmd, s.args) }
 
-func (s *Step) Start(outC, errC chan<- Message) (err error) {
+func (s *Step) Start(outC, errC chan<- Message) (ok bool, err error) {
 	var (
 		outCC = make(chan string, 1)
 		errCC = make(chan string, 1)
 	)
 	go func() {
 		for {
-			if outStr, ok := <-outCC; !ok {
+			if outStr, okk := <-outCC; !okk {
 				break
 			} else if outC != nil {
 				outC <- Message{s, outStr, false}
@@ -55,14 +55,14 @@ func (s *Step) Start(outC, errC chan<- Message) (err error) {
 	}()
 	go func() {
 		for {
-			if errStr, ok := <-errCC; !ok {
+			if errStr, okk := <-errCC; !okk {
 				break
 			} else if errC != nil {
 				outC <- Message{s, errStr, true}
 			}
 		}
 	}()
-	err = cmd.Start(s.name, s.args, outCC, errCC, nil, func(outCmd *exec.Cmd) {
+	ok, err = cmd.Start(s.name, s.args, outCC, errCC, nil, func(outCmd *exec.Cmd) {
 		if outCmd != nil {
 			s.cmd = outCmd
 			s.Started = true

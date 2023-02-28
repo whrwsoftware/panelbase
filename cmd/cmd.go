@@ -17,7 +17,7 @@ import (
 	"os/exec"
 )
 
-func Run(name string, args ...string) (outStr, errStr string, err error) {
+func Run(name string, args ...string) (outStr, errStr string, ok bool, err error) {
 	c := exec.Command(name, args...)
 	var (
 		ob bytes.Buffer
@@ -28,12 +28,13 @@ func Run(name string, args ...string) (outStr, errStr string, err error) {
 	if err = c.Run(); err != nil {
 		return
 	}
+	ok = c.ProcessState.ExitCode() == 0
 	outStr = ob.String()
 	errStr = eb.String()
 	return
 }
 
-func Start(name string, args []string, outC, errC chan<- string, inC <-chan string, startedFunc func(outCmd *exec.Cmd)) (err error) {
+func Start(name string, args []string, outC, errC chan<- string, inC <-chan string, startedFunc func(outCmd *exec.Cmd)) (ok bool, err error) {
 	outCmd := exec.Command(name, args...)
 	{
 		stdin, wErr := outCmd.StdinPipe()
@@ -64,6 +65,7 @@ func Start(name string, args []string, outC, errC chan<- string, inC <-chan stri
 		if c := outC; c != nil {
 			rr := bufio.NewReader(stdout)
 			go func() {
+				defer func() { _ = recover() }()
 				defer close(c)
 				for {
 					readLine, _, err2 := rr.ReadLine()
@@ -84,6 +86,7 @@ func Start(name string, args []string, outC, errC chan<- string, inC <-chan stri
 		if c := errC; c != nil {
 			rr := bufio.NewReader(stderr)
 			go func() {
+				defer func() { _ = recover() }()
 				defer close(c)
 				for {
 					readLine, _, err2 := rr.ReadLine()
@@ -102,5 +105,6 @@ func Start(name string, args []string, outC, errC chan<- string, inC <-chan stri
 		fn(outCmd)
 	}
 	err = outCmd.Wait()
+	ok = outCmd.ProcessState.ExitCode() == 0
 	return
 }

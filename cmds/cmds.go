@@ -13,7 +13,10 @@ package cmds
 
 import "github.com/whrwsoftware/panelbase/cmd"
 
-func run(n string, v ...string) (out string, err error) { out, _, err = cmd.Run(n, v...); return }
-func start(n string, v []string, outC, errC chan<- string) (err error) {
+func run(n string, v ...string) (out string, ok bool, err error) {
+	out, _, ok, err = cmd.Run(n, v...)
+	return
+}
+func start(n string, v []string, outC, errC chan<- string) (ok bool, err error) {
 	return cmd.Start(n, v, outC, errC, nil, nil)
 }

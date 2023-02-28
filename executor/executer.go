@@ -50,7 +50,7 @@ func (etr *Executor) Add(step *Step) {
 
 func (etr *Executor) Clear() { etr.steps = make([]*Step, 0) }
 
-func (etr *Executor) execAsync() (err error) {
+func (etr *Executor) execAsync() (ok bool, err error) {
 	var (
 		nextCh   = make(chan struct{}, 1)
 		outErrCh = make(chan error, 1)
@@ -78,8 +78,12 @@ func (etr *Executor) execAsync() (err error) {
 		for _, step := range etr.steps {
 			go func(step *Step, errCh chan<- error) {
 				defer wg.Done()
-				if sErr := step.Start(etr.outC, etr.errC); sErr != nil {
+				sOk, sErr := step.Start(etr.outC, etr.errC)
+				if sErr != nil {
 					errCh <- sErr
+					close(errCh)
+				} else if !sOk {
+					errCh <- errors.New("the current step execute failed")
 					close(errCh)
 				}
 			}(step, errCh)
@@ -95,9 +99,9 @@ func (etr *Executor) execAsync() (err error) {
 	return
 }
 
-func (etr *Executor) execSync() (err error) {
+func (etr *Executor) execSync() (ok bool, err error) {
 	for _, step := range etr.steps {
-		if err = step.Start(etr.outC, etr.errC); err != nil {
+		if ok, err = step.Start(etr.outC, etr.errC); err != nil || !ok {
 			return
 		}
 		if etr.killed {
@@ -107,16 +111,16 @@ func (etr *Executor) execSync() (err error) {
 	return
 }
 
-func (etr *Executor) Exec() (err error) {
+func (etr *Executor) Exec() (ok bool, err error) {
 	if len(etr.steps) == 0 {
-		return ErrStepsEmpty
+		return false, ErrStepsEmpty
 	}
 
 	if etr.async {
 		return etr.execAsync()
 	}
 
-	err = etr.execSync()
+	ok, err = etr.execSync()
 	if etr.outC != nil {
 		close(etr.outC)
 	}

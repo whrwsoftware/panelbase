@@ -9,69 +9,74 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package apptpl
+package app
 
-type CentOSSvcTemplate struct {
-	Name            string
-	ServiceName     string
-	RegisterService bool
-	PreCheck        bool
-	PreCheckFunc    func() (ok bool, err error)
+// BasedYumApp
+//
+// # The Application install based on yum packager
+//
+// yum install -y APP
+//
+// yum uninstall -y APP
+//
+// yum search APP
+type BasedYumApp struct {
+	Name       string      // The Application name
+	OutC, ErrC chan string // The out & err channel
 }
 
-func (c *CentOSSvcTemplate) Check() (ok bool, err error) {
+func (b *BasedYumApp) Check() (err error) { return nil }
+
+func (b *BasedYumApp) Install() (err error) {
+	return
+}
+
+func (b *BasedYumApp) Uninstall() (err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CentOSSvcTemplate) ServiceInstall() (ok bool, err error) { return true, nil }
-
-func (c *CentOSSvcTemplate) Enable() (ok bool, err error) {
+func (b *BasedYumApp) Configure(c Cfg) (err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CentOSSvcTemplate) Disable() (ok bool, err error) {
+func (b *BasedYumApp) ServiceInstall() (err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CentOSSvcTemplate) Install() (ok bool, err error) {
+func (b *BasedYumApp) ServiceEnable() (err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CentOSSvcTemplate) Uninstall() (ok bool, err error) {
+func (b *BasedYumApp) ServiceDisable() (err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CentOSSvcTemplate) Configure(cfg Cfg) (err error) {
+func (b *BasedYumApp) Start() (err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CentOSSvcTemplate) Start() (ok bool, err error) {
+func (b *BasedYumApp) Stop() (err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CentOSSvcTemplate) Stop() (ok bool, err error) {
+func (b *BasedYumApp) Restart() (err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CentOSSvcTemplate) Restart() (ok bool, err error) {
+func (b *BasedYumApp) Status() (s string, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CentOSSvcTemplate) Status() (s string, err error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (c *CentOSSvcTemplate) Version() (v string, err error) {
+func (b *BasedYumApp) Version() (v string, err error) {
 	//TODO implement me
 	panic("implement me")
 }
