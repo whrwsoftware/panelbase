@@ -22,6 +22,6 @@ func TestStep_kill(t *testing.T) {
 		time.Sleep(time.Second)
 		_ = step.Kill()
 	}()
-	_ = step.Start(nil, nil)
+	_, _ = step.Start(nil, nil)
 	t.Log("test ok!")
 }

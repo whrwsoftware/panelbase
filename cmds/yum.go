@@ -23,6 +23,9 @@ func (y *yum) Search(v string) (out string, ok bool, err error) { return yum0("s
 func (y *yum) Install(v string, outC, errC chan<- string) (ok bool, err error) {
 	return yum1([]string{"install", "-y", v}, outC, errC)
 }
+func (y *yum) LocalInstall(v string, outC, errC chan<- string) (ok bool, err error) {
+	return yum1([]string{"localinstall", "-y", v}, outC, errC)
+}
 func (y *yum) Uninstall(v string, outC, errC chan<- string) (ok bool, err error) {
 	return yum1([]string{"remove", "-y", v}, outC, errC)
 }

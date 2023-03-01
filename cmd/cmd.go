@@ -15,7 +15,21 @@ import (
 	"bufio"
 	"bytes"
 	"os/exec"
+	"strings"
 )
+
+func RunFullCmd(cmdStr string) (outStr, errStr string, ok bool, err error) {
+	cmdList := strings.Split(cmdStr, " ")
+	if len(cmdList) > 0 {
+		cmdName := cmdList[0]
+		var args []string
+		if len(cmdList) > 1 {
+			args = cmdList[1:]
+		}
+		outStr, errStr, ok, err = Run(cmdName, args...)
+	}
+	return
+}
 
 func Run(name string, args ...string) (outStr, errStr string, ok bool, err error) {
 	c := exec.Command(name, args...)

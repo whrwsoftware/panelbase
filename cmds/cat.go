@@ -9,11 +9,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package app
+package cmds
 
-type Cfg = Configuration
-
-type Configuration struct {
-	Name string
-	Conf map[string]string
-}
+func Cat(file string) (out string, ok bool, err error) { return run("cat", file) }

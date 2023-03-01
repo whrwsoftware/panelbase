@@ -9,33 +9,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package initd
+package installers
 
-import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
-)
+import "github.com/whrwsoftware/panelbase/cmds"
 
-var (
-	//go:embed bash.sh
-	FSBashSh string
-)
+type rpm struct {
+	Name       string
+	OutC, ErrC chan string
+}
 
-const (
-	RootInitD = "/etc/init.d"
-)
+func Rpm(name string, outC chan string, errC chan string) *rpm {
+	return &rpm{Name: name, OutC: outC, ErrC: errC}
+}
 
-type (
-	Opt struct {
-		App     string
-		Command string
-		Option  string
-		PidFile string
-		LogFile string
-		Version string
-	}
-)
-
-var (
-	GenBashSh = appconf.Gen[Opt]
-)
+func (r *rpm) Install() (ok bool, err error)   { return cmds.Rpm().Install(r.Name, r.OutC, r.ErrC) }
+func (r *rpm) Uninstall() (ok bool, err error) { return cmds.Rpm().Uninstall(r.Name, r.OutC, r.ErrC) }

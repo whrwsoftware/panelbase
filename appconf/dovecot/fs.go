@@ -9,41 +9,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package postfix
+package dovecot
 
 import (
-	"embed"
+	_ "embed"
 	"github.com/whrwsoftware/panelbase/appconf"
 )
 
-//go:embed dovecot.conf conf.d/10-auth.conf conf.d/10-mail.conf conf.d/10-master.conf
-var fs embed.FS
+var (
+	//go:embed dovecot.conf
+	FSDovecotConf string
 
-const (
-	dovecotConfDist   = "/etc/dovecot/dovecot.conf"
-	confD10AuthDist   = "/etc/dovecot/conf.d/10-auth.conf"
-	confD10MailDist   = "/etc/dovecot/conf.d/10-mail.conf"
-	confD10MasterDist = "/etc/dovecot/conf.d/10-master.conf"
+	//go:embed conf.d/10-auth.conf
+	FSConfD10AuthConf string
+
+	//go:embed conf.d/10-mail.conf
+	FSConfD10MailConf string
+
+	//go:embed conf.d/10-master.conf
+	FSConfD10MasterConf string
 )
 
-type Args struct {
-	MyHostname string
-	MyDomain   string
-	MyOrigin   string
-}
+const (
+	DistDovecotConf       = "/etc/dovecot/dovecot.conf"
+	DistConfD10AuthConf   = "/etc/dovecot/conf.d/10-auth.conf"
+	DistConfD10MailConf   = "/etc/dovecot/conf.d/10-mail.conf"
+	DistConfD10MasterConf = "/etc/dovecot/conf.d/10-master.conf"
+)
 
-func DovecotConf(a Args) (err error) {
-	return appconf.Gen(fs, "dovecot.conf", dovecotConfDist, a, 0600)
-}
+type (
+	Opt struct {
+		MyHostname string
+		MyDomain   string
+		MyOrigin   string
+	}
+	OptConfD10Auth   struct{}
+	OptConfD10Mail   struct{}
+	OptConfD10Master struct{}
+)
 
-func ConfD10Auth() (err error) {
-	return appconf.Gen(fs, "conf.d/10-auth.conf", confD10AuthDist, nil, 0600)
-}
-
-func ConfD10Mail() (err error) {
-	return appconf.Gen(fs, "conf.d/10-mail.conf", confD10MailDist, nil, 0600)
-}
-
-func ConfD10Master() (err error) {
-	return appconf.Gen(fs, "conf.d/10-master.conf", confD10MasterDist, nil, 0600)
-}
+var (
+	GenDovecotConf       = appconf.Gen[Opt]
+	GenConfD10AuthConf   = appconf.Gen[OptConfD10Auth]
+	GenConfD10MailConf   = appconf.Gen[OptConfD10Mail]
+	GenConfD10MasterConf = appconf.Gen[OptConfD10Master]
+)

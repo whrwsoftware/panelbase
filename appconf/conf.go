@@ -13,20 +13,19 @@ package appconf
 
 import (
 	"bytes"
-	"embed"
-	"os"
 	"text/template"
 )
 
-func Gen(fs embed.FS, name string, dist string, data any, perm os.FileMode) (err error) {
-	data, fErr := fs.ReadFile(name)
-	if fErr != nil {
-		return fErr
-	}
+func Gen[A any](tpl string, data A) (str string, err error) {
 	buf := bytes.NewBufferString("")
-	if err = template.New("").Execute(buf, data); err != nil {
+	t, tErr := template.New("").Parse(tpl)
+	if tErr != nil {
+		err = tErr
 		return
 	}
-	err = os.WriteFile(dist, buf.Bytes(), perm)
+	if err = t.Execute(buf, data); err != nil {
+		return
+	}
+	str = buf.String()
 	return
 }

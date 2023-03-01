@@ -54,7 +54,7 @@ func TestExecutor_Kill(t *testing.T) {
 		time.Sleep(time.Second)
 		etr.Kill()
 	}()
-	_ = etr.Exec()
+	_, _ = etr.Exec()
 	t.Log("test ok!")
 }
 
@@ -73,7 +73,7 @@ func TestExecutor_Exec(t *testing.T) {
 	{
 		etr := NewExecutor(false)
 		etr.Create("goscanx")
-		if err := etr.Exec(); err == nil {
+		if _, err := etr.Exec(); err == nil {
 			t.Error("test failed!")
 		}
 	}
@@ -90,7 +90,7 @@ func TestExecutor_Exec(t *testing.T) {
 			time.Sleep(time.Second)
 			ch <- true
 		}()
-		_ = etr.Exec()
+		_, _ = etr.Exec()
 	}
 }
 
@@ -103,7 +103,7 @@ func TestExecutor_kill(t *testing.T) {
 			etr.Kill()
 			t.Log("test ok!")
 		}()
-		_ = etr.Exec()
+		_, _ = etr.Exec()
 	}
 }
 
@@ -136,7 +136,7 @@ func TestExecutor_StartSync(t *testing.T) {
 			}
 		}
 	}()
-	_ = etr.Exec()
+	_, _ = etr.Exec()
 	t.Log("test ok!")
 }
 
@@ -170,13 +170,13 @@ func TestExecutor_StartAsync(t *testing.T) {
 			}
 		}
 	}()
-	err := etr.Exec()
+	_, err := etr.Exec()
 	t.Log(err)
 	t.Log("test ok!")
 	{
-		_, _, _ = cmd.Run("gorm", "tmp")
-		_, _, _ = cmd.Run("gorm", "tmp1")
-		_, _, _ = cmd.Run("gorm", "tmp2")
-		_, _, _ = cmd.Run("gorm", "tmp3")
+		_, _, _, _ = cmd.Run("gorm", "tmp")
+		_, _, _, _ = cmd.Run("gorm", "tmp1")
+		_, _, _, _ = cmd.Run("gorm", "tmp2")
+		_, _, _, _ = cmd.Run("gorm", "tmp3")
 	}
 }

@@ -9,33 +9,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package initd
+package installers
 
-import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
-)
+import "github.com/whrwsoftware/panelbase/cmds"
 
-var (
-	//go:embed bash.sh
-	FSBashSh string
-)
+type yum struct {
+	Name       string
+	OutC, ErrC chan string
+}
 
-const (
-	RootInitD = "/etc/init.d"
-)
+func Yum(name string, outC chan string, errC chan string) *yum {
+	return &yum{Name: name, OutC: outC, ErrC: errC}
+}
 
-type (
-	Opt struct {
-		App     string
-		Command string
-		Option  string
-		PidFile string
-		LogFile string
-		Version string
-	}
-)
-
-var (
-	GenBashSh = appconf.Gen[Opt]
-)
+func (y *yum) Install() (ok bool, err error)   { return cmds.Yum().Install(y.Name, y.OutC, y.ErrC) }
+func (y *yum) Uninstall() (ok bool, err error) { return cmds.Yum().Uninstall(y.Name, y.OutC, y.ErrC) }

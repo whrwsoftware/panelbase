@@ -9,33 +9,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package initd
+package configurators
 
 import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
+	"errors"
+	"github.com/whrwsoftware/panelbase/apptpl"
+	"os"
 )
 
 var (
-	//go:embed bash.sh
-	FSBashSh string
-)
-
-const (
-	RootInitD = "/etc/init.d"
+	ErrNotFoundConf = errors.New("configurator: not found conf")
 )
 
 type (
-	Opt struct {
-		App     string
-		Command string
-		Option  string
-		PidFile string
-		LogFile string
-		Version string
+	file struct {
+		ConfMapping map[string]conf
+	}
+	conf struct {
+		Path string
+		Perm os.FileMode
 	}
 )
 
-var (
-	GenBashSh = appconf.Gen[Opt]
-)
+func Conf(path string, perm os.FileMode) conf              { return conf{Path: path, Perm: perm} }
+func File(confMapping map[string]conf) apptpl.Configurator { return &file{ConfMapping: confMapping} }
+
+func (f *file) Configure(cfg apptpl.Cfg) (err error) {
+	confV, ok := f.ConfMapping[cfg.Name]
+	if !ok {
+		return ErrNotFoundConf
+	}
+	return os.WriteFile(confV.Path, []byte(cfg.Data), confV.Perm)
+}

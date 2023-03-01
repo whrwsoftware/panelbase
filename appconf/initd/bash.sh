@@ -10,12 +10,8 @@ stop() {
     kill -9 $(cat {{.PidFile}})
 }
 
-status() {
-    ps -p {{.PidFile}}
-}
-
-log() {
-    tail -f -n 100 {{.LogFile}}
+version() {
+    echo {{.Version}}
 }
 
 restart() {
@@ -33,13 +29,10 @@ case "$1" in
   restart)
         restart
         ;;
-  status)
-        status
-        ;;
-  log)
-        log
+  version)
+        version
         ;;
   *)
-        echo $"Usage: $0 {start|stop|restart|status|log}"
+        echo $"Usage: $0 {start|stop|restart|version}"
         exit 1
 esac

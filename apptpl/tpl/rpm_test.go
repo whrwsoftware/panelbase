@@ -9,33 +9,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package initd
+package tpl
 
-import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
-)
+import "testing"
 
-var (
-	//go:embed bash.sh
-	FSBashSh string
-)
+func TestRpm(t *testing.T) {
 
-const (
-	RootInitD = "/etc/init.d"
-)
-
-type (
-	Opt struct {
-		App     string
-		Command string
-		Option  string
-		PidFile string
-		LogFile string
-		Version string
-	}
-)
-
-var (
-	GenBashSh = appconf.Gen[Opt]
-)
+}

@@ -9,33 +9,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package initd
+package tpl
 
 import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
+	"github.com/whrwsoftware/panelbase/apptpl"
+	"github.com/whrwsoftware/panelbase/apptpl/configurators"
+	"github.com/whrwsoftware/panelbase/apptpl/controllers"
+	"github.com/whrwsoftware/panelbase/apptpl/installers"
 )
 
-var (
-	//go:embed bash.sh
-	FSBashSh string
-)
-
-const (
-	RootInitD = "/etc/init.d"
-)
-
-type (
-	Opt struct {
-		App     string
-		Command string
-		Option  string
-		PidFile string
-		LogFile string
-		Version string
+func RpmApp(name string, ver string, pkg string, outC chan string, errC chan string) apptpl.Applicable {
+	return &apptpl.Application{
+		Checker:      nil,
+		Installer:    installers.Rpm(pkg, outC, errC),
+		Controller:   controllers.NewSystemctl(name, "echo "+ver),
+		Configurator: configurators.NewFile(map[string]configurators.Conf{}),
 	}
-)
-
-var (
-	GenBashSh = appconf.Gen[Opt]
-)
+}

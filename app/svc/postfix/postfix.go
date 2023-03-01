@@ -10,17 +10,3 @@
 // limitations under the License.
 
 package postfix
-
-import "github.com/whrwsoftware/panelbase/apptpl"
-
-var (
-	CentOSPostfix = &apptpl.CentOSSvcTemplate{
-		Name:            "postfix",
-		ServiceName:     "postfix",
-		RegisterService: true,
-		PreCheck:        true,
-		PreCheckFunc: func() (ok bool, err error) {
-			return false, nil
-		},
-	}
-)

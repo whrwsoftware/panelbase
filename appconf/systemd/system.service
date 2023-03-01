@@ -1,0 +1,14 @@
+[Unit]
+Description={{.Unit.Description}}
+After=network.target
+
+[Service]
+Type={{.Service.Type}}
+PIDFile=-{{.Service.PIDFile}}
+EnvironmentFile=-{{.Service.EnvironmentFile}}
+ExecStart=-{{.Service.ExecStart}}
+ExecReload=-{{.Service.ExecReload}}
+ExecStop=-{{.Service.ExecStop}}
+
+[Install]
+WantedBy=multi-user.target

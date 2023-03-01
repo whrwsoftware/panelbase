@@ -12,19 +12,25 @@
 package postfix
 
 import (
-	"embed"
+	_ "embed"
 	"github.com/whrwsoftware/panelbase/appconf"
 )
 
-//go:embed main.cf
-var fs embed.FS
+var (
+	//go:embed main.cf
+	FSMainCf string
+)
 
-const mainCfDist = "/etc/postfix/main.cf"
+const (
+	DistMainCf = "/etc/postfix/main.cf"
+)
 
-type Args struct {
+type Opt struct {
 	MyHostname string
 	MyDomain   string
 	MyOrigin   string
 }
 
-func MainCf(a Args) (err error) { return appconf.Gen(fs, "main.cf", mainCfDist, a, 0600) }
+var (
+	GenMainCf = appconf.Gen[Opt]
+)
