@@ -20,16 +20,16 @@ import (
 type systemctl struct {
 	Name   string
 	VerCmd string
-	S      *cmds.Systemctl
+	*cmds.Systemctl
 }
 
 func Systemctl(name string, verCmd string) apptpl.Controller {
 	return &systemctl{name, verCmd, cmds.NewSystemctl(name)}
 }
 
-func (s *systemctl) Start() (ok bool, err error)   { _, ok, err = s.S.Start(); return }
-func (s *systemctl) Stop() (ok bool, err error)    { _, ok, err = s.S.Stop(); return }
-func (s *systemctl) Restart() (ok bool, err error) { _, ok, err = s.S.Restart(); return }
+func (s *systemctl) Start() (ok bool, err error)   { _, ok, err = s.Systemctl.Start(); return }
+func (s *systemctl) Stop() (ok bool, err error)    { _, ok, err = s.Systemctl.Stop(); return }
+func (s *systemctl) Restart() (ok bool, err error) { _, ok, err = s.Systemctl.Restart(); return }
 func (s *systemctl) Version() (v string, ok bool, err error) {
 	v, _, ok, err = cmd.RunFullCmd(s.VerCmd)
 	return
