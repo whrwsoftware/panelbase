@@ -9,29 +9,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package postfix
+package tpl
 
 import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
+	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/app/controllers"
+	"github.com/whrwsoftware/panelbase/app/installers"
 )
 
-var (
-	//go:embed main.cf
-	FSMainCf string
-)
-
-const (
-	NameMainCf = "main.cf"
-	DistMainCf = "/etc/postfix/main.cf"
-)
-
-type Opt struct {
-	MyHostname string
-	MyDomain   string
-	MyOrigin   string
+func AptGetApp(name string, ver string, pkg string, outC chan string, errC chan string, checker app.Checker, configurator app.Configurator) app.Applicable {
+	return app.NewApplication(checker, installers.AptGet(pkg, outC, errC), controllers.Systemctl(name, "echo "+ver), configurator)
 }
-
-var (
-	GenMainCf = appconf.Gen[Opt]
-)

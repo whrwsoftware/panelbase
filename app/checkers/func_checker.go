@@ -9,29 +9,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package postfix
+package checkers
 
-import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
-)
+import "github.com/whrwsoftware/panelbase/app"
 
-var (
-	//go:embed main.cf
-	FSMainCf string
-)
+type CheckFunc func() (ok bool, err error)
 
-const (
-	NameMainCf = "main.cf"
-	DistMainCf = "/etc/postfix/main.cf"
-)
-
-type Opt struct {
-	MyHostname string
-	MyDomain   string
-	MyOrigin   string
+type funcChecker struct {
+	CheckFunc []CheckFunc
 }
 
-var (
-	GenMainCf = appconf.Gen[Opt]
-)
+func FuncChecker(CheckFunc ...CheckFunc) app.Checker { return &funcChecker{CheckFunc} }
+
+func (c *funcChecker) Check() (ok bool, err error) {
+	if fns := c.CheckFunc; fns != nil && len(fns) > 0 {
+		for _, fn := range fns {
+			if ok, err = fn(); err != nil || !ok {
+				return false, err
+			}
+		}
+	}
+	return true, nil
+}

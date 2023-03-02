@@ -9,29 +9,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package postfix
+package installers
 
 import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
+	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/cmds"
 )
 
-var (
-	//go:embed main.cf
-	FSMainCf string
-)
-
-const (
-	NameMainCf = "main.cf"
-	DistMainCf = "/etc/postfix/main.cf"
-)
-
-type Opt struct {
-	MyHostname string
-	MyDomain   string
-	MyOrigin   string
+type apt struct {
+	Name       string
+	OutC, ErrC chan string
+	*cmds.Apt
 }
 
-var (
-	GenMainCf = appconf.Gen[Opt]
-)
+func Apt(name string, outC chan string, errC chan string) app.Installer {
+	return &apt{name, outC, errC, cmds.NewApt(name)}
+}
+
+func (a *apt) Install() (ok bool, err error)   { return a.Apt.Install(a.OutC, a.ErrC) }
+func (a *apt) Reinstall() (ok bool, err error) { return a.Apt.Reinstall(a.OutC, a.ErrC) }
+func (a *apt) Uninstall() (ok bool, err error) { return a.Apt.Uninstall(a.OutC, a.ErrC) }

@@ -9,29 +9,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package postfix
+package installers
 
 import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
+	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/cmds"
 )
 
-var (
-	//go:embed main.cf
-	FSMainCf string
-)
-
-const (
-	NameMainCf = "main.cf"
-	DistMainCf = "/etc/postfix/main.cf"
-)
-
-type Opt struct {
-	MyHostname string
-	MyDomain   string
-	MyOrigin   string
+type yum struct {
+	Name       string
+	OutC, ErrC chan string
+	*cmds.Yum
 }
 
-var (
-	GenMainCf = appconf.Gen[Opt]
-)
+func Yum(name string, outC chan string, errC chan string) app.Installer {
+	return &yum{name, outC, errC, cmds.NewYum(name)}
+}
+
+func (y *yum) Install() (ok bool, err error)   { return y.Yum.Install(y.OutC, y.ErrC) }
+func (y *yum) Reinstall() (ok bool, err error) { return y.Yum.Reinstall(y.OutC, y.ErrC) }
+func (y *yum) Uninstall() (ok bool, err error) { return y.Yum.Uninstall(y.OutC, y.ErrC) }

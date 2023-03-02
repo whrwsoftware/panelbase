@@ -9,29 +9,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package postfix
+package configurators
 
 import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
+	"errors"
+	"github.com/whrwsoftware/panelbase/app"
+	"os"
 )
 
 var (
-	//go:embed main.cf
-	FSMainCf string
+	ErrNotFoundConf = errors.New("configurator: not found conf")
 )
 
-const (
-	NameMainCf = "main.cf"
-	DistMainCf = "/etc/postfix/main.cf"
+type (
+	file struct{ ConfMapping }
+	Conf struct {
+		Path string
+		Perm os.FileMode
+	}
+	ConfMapping map[string]Conf
 )
 
-type Opt struct {
-	MyHostname string
-	MyDomain   string
-	MyOrigin   string
+func NewConf(path string, perm os.FileMode) Conf    { return Conf{Path: path, Perm: perm} }
+func File(confMapping ConfMapping) app.Configurator { return &file{confMapping} }
+
+func (f *file) Configure(cfg app.Cfg) (err error) {
+	confV, ok := f.ConfMapping[cfg.Name]
+	if !ok {
+		return ErrNotFoundConf
+	}
+	return os.WriteFile(confV.Path, []byte(cfg.Data), confV.Perm)
 }
-
-var (
-	GenMainCf = appconf.Gen[Opt]
-)
