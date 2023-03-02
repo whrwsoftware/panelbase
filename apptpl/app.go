@@ -16,6 +16,7 @@ type Checker interface{ Check() (ok bool, err error) }
 type Installer interface {
 	Install() (ok bool, err error)
 	Uninstall() (ok bool, err error)
+	Reinstall() (ok bool, err error)
 }
 
 type Controller interface {
@@ -28,8 +29,8 @@ type Controller interface {
 type Configurator interface{ Configure(cfg Cfg) (err error) }
 
 type Cfg struct {
-	Name string // The configuration name
-	Data string // The configuration data
+	Name string
+	Data string
 }
 
 type Applicable interface {

@@ -14,18 +14,12 @@ package cmd
 import (
 	"bufio"
 	"bytes"
+	"github.com/whrwsoftware/panelbase/ztools"
 	"os/exec"
-	"strings"
 )
 
 func RunFullCmd(cmdStr string) (outStr, errStr string, ok bool, err error) {
-	cmdList := strings.Split(cmdStr, " ")
-	if len(cmdList) > 0 {
-		cmdName := cmdList[0]
-		var args []string
-		if len(cmdList) > 1 {
-			args = cmdList[1:]
-		}
+	if cmdName, args := ztools.SplitCmd(cmdStr); cmdName != "" {
 		outStr, errStr, ok, err = Run(cmdName, args...)
 	}
 	return

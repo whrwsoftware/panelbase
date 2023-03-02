@@ -11,16 +11,21 @@
 
 package installers
 
-import "github.com/whrwsoftware/panelbase/cmds"
+import (
+	"github.com/whrwsoftware/panelbase/apptpl"
+	"github.com/whrwsoftware/panelbase/cmds"
+)
 
 type yum struct {
 	Name       string
 	OutC, ErrC chan string
+	*cmds.Yum
 }
 
-func Yum(name string, outC chan string, errC chan string) *yum {
-	return &yum{Name: name, OutC: outC, ErrC: errC}
+func Yum(name string, outC chan string, errC chan string) apptpl.Installer {
+	return &yum{name, outC, errC, cmds.NewYum(name)}
 }
 
-func (y *yum) Install() (ok bool, err error)   { return cmds.Yum().Install(y.Name, y.OutC, y.ErrC) }
-func (y *yum) Uninstall() (ok bool, err error) { return cmds.Yum().Uninstall(y.Name, y.OutC, y.ErrC) }
+func (y *yum) Install() (ok bool, err error)   { return y.Yum.Install(y.OutC, y.ErrC) }
+func (y *yum) Reinstall() (ok bool, err error) { return y.Yum.Reinstall(y.OutC, y.ErrC) }
+func (y *yum) Uninstall() (ok bool, err error) { return y.Yum.Uninstall(y.OutC, y.ErrC) }

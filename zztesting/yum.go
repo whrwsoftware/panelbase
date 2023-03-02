@@ -9,10 +9,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package tpl
+//go:generate go build -o yum
 
-import "testing"
+package main
 
-func TestRpm(t *testing.T) {
+import "fmt"
 
+func main() {
+	fmt.Println("yum app")
 }

@@ -9,34 +9,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configurators
+package systemd
 
 import (
-	"errors"
-	"github.com/whrwsoftware/panelbase/apptpl"
-	"os"
+	_ "embed"
+	"github.com/whrwsoftware/panelbase/appconf"
 )
 
 var (
-	ErrNotFoundConf = errors.New("configurator: not found conf")
+	//go:embed system.service
+	FSService string
+)
+
+const (
+	RootService = "/etc/systemd/system/multi-user.target.wants"
 )
 
 type (
-	file struct{ ConfMapping }
-	Conf struct {
-		Path string
-		Perm os.FileMode
-	}
-	ConfMapping map[string]Conf
+	Opt struct{}
 )
 
-func NewConf(path string, perm os.FileMode) Conf       { return Conf{Path: path, Perm: perm} }
-func File(confMapping ConfMapping) apptpl.Configurator { return &file{confMapping} }
-
-func (f *file) Configure(cfg apptpl.Cfg) (err error) {
-	confV, ok := f.ConfMapping[cfg.Name]
-	if !ok {
-		return ErrNotFoundConf
-	}
-	return os.WriteFile(confV.Path, []byte(cfg.Data), confV.Perm)
-}
+var (
+	GenService = appconf.Gen[Opt]
+)

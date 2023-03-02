@@ -13,6 +13,7 @@ package executor
 
 import (
 	"errors"
+	"github.com/whrwsoftware/panelbase/ztools"
 	"sync"
 	"time"
 )
@@ -32,6 +33,18 @@ type (
 )
 
 func NewExecutor(async bool) *Executor { return &Executor{steps: make([]*Step, 0), async: async} }
+
+func NewExecutorSteps(async bool, stepCmd ...string) *Executor {
+	etr := NewExecutor(async)
+	if len(stepCmd) > 0 {
+		for _, cc := range stepCmd {
+			if cmdName, args := ztools.SplitCmd(cc); cmdName != "" {
+				etr.Create(cmdName, args...)
+			}
+		}
+	}
+	return etr
+}
 
 func (etr *Executor) Chan(outC, errC chan<- Message) {
 	etr.outC = outC

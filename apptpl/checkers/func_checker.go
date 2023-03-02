@@ -9,14 +9,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package tpl
+package checkers
 
-import (
-	"github.com/whrwsoftware/panelbase/apptpl"
-	"github.com/whrwsoftware/panelbase/apptpl/controllers"
-	"github.com/whrwsoftware/panelbase/apptpl/installers"
-)
+import "github.com/whrwsoftware/panelbase/apptpl"
 
-func RpmApp(name string, ver string, pkg string, outC chan string, errC chan string, checker apptpl.Checker, configurator apptpl.Configurator) apptpl.Applicable {
-	return apptpl.NewApplication(checker, installers.Rpm(pkg, outC, errC), controllers.Systemctl(name, "echo "+ver), configurator)
+type CheckFunc func() (ok bool, err error)
+
+type funcChecker struct {
+	CheckFunc []CheckFunc
+}
+
+func FuncChecker(CheckFunc ...CheckFunc) apptpl.Checker { return &funcChecker{CheckFunc} }
+
+func (c *funcChecker) Check() (ok bool, err error) {
+	if fns := c.CheckFunc; fns != nil && len(fns) > 0 {
+		for _, fn := range fns {
+			if ok, err = fn(); err != nil || !ok {
+				return false, err
+			}
+		}
+	}
+	return true, nil
 }

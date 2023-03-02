@@ -13,16 +13,10 @@ package tpl
 
 import (
 	"github.com/whrwsoftware/panelbase/apptpl"
-	"github.com/whrwsoftware/panelbase/apptpl/configurators"
 	"github.com/whrwsoftware/panelbase/apptpl/controllers"
 	"github.com/whrwsoftware/panelbase/apptpl/installers"
 )
 
-func YumApp(name string, ver string, pkg string, outC chan string, errC chan string) apptpl.Applicable {
-	return &apptpl.Application{
-		Checker:      nil,
-		Installer:    installers.Yum(pkg, outC, errC),
-		Controller:   controllers.NewSystemctl(name, "echo "+ver),
-		Configurator: configurators.NewFile(map[string]configurators.Conf{}),
-	}
+func YumApp(name string, ver string, pkg string, outC chan string, errC chan string, checker apptpl.Checker, configurator apptpl.Configurator) apptpl.Applicable {
+	return apptpl.NewApplication(checker, installers.Yum(pkg, outC, errC), controllers.Systemctl(name, "echo "+ver), configurator)
 }

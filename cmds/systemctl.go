@@ -11,14 +11,14 @@
 
 package cmds
 
-type systemctl struct{ unit string }
+type Systemctl struct{ unit string }
 
-func Systemctl(unit string) *systemctl                         { return &systemctl{unit} }
-func systemctl0(v ...string) (out string, ok bool, err error)  { return run("systemctl", v...) }
-func (s *systemctl) Version() (out string, ok bool, err error) { return systemctl0("--version") }
-func (s *systemctl) Enable() (out string, ok bool, err error)  { return systemctl0("enable", s.unit) }
-func (s *systemctl) Disable() (out string, ok bool, err error) { return systemctl0("disable", s.unit) }
-func (s *systemctl) Start() (out string, ok bool, err error)   { return systemctl0("start", s.unit) }
-func (s *systemctl) Stop() (out string, ok bool, err error)    { return systemctl0("stop", s.unit) }
-func (s *systemctl) Restart() (out string, ok bool, err error) { return systemctl0("restart", s.unit) }
-func (s *systemctl) Status() (out string, ok bool, err error)  { return systemctl0("status", s.unit) }
+func NewSystemctl(unit string) *Systemctl                             { return &Systemctl{unit} }
+func (s *Systemctl) run(v ...string) (out string, ok bool, err error) { return run("systemctl", v...) }
+func (s *Systemctl) Version() (out string, ok bool, err error)        { return s.run("--version") }
+func (s *Systemctl) Enable() (out string, ok bool, err error)         { return s.run("enable", s.unit) }
+func (s *Systemctl) Disable() (out string, ok bool, err error)        { return s.run("disable", s.unit) }
+func (s *Systemctl) Start() (out string, ok bool, err error)          { return s.run("start", s.unit) }
+func (s *Systemctl) Stop() (out string, ok bool, err error)           { return s.run("stop", s.unit) }
+func (s *Systemctl) Restart() (out string, ok bool, err error)        { return s.run("restart", s.unit) }
+func (s *Systemctl) Status() (out string, ok bool, err error)         { return s.run("status", s.unit) }

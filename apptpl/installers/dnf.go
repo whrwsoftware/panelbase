@@ -9,34 +9,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configurators
+package installers
 
 import (
-	"errors"
 	"github.com/whrwsoftware/panelbase/apptpl"
-	"os"
+	"github.com/whrwsoftware/panelbase/cmds"
 )
 
-var (
-	ErrNotFoundConf = errors.New("configurator: not found conf")
-)
-
-type (
-	file struct{ ConfMapping }
-	Conf struct {
-		Path string
-		Perm os.FileMode
-	}
-	ConfMapping map[string]Conf
-)
-
-func NewConf(path string, perm os.FileMode) Conf       { return Conf{Path: path, Perm: perm} }
-func File(confMapping ConfMapping) apptpl.Configurator { return &file{confMapping} }
-
-func (f *file) Configure(cfg apptpl.Cfg) (err error) {
-	confV, ok := f.ConfMapping[cfg.Name]
-	if !ok {
-		return ErrNotFoundConf
-	}
-	return os.WriteFile(confV.Path, []byte(cfg.Data), confV.Perm)
+type dnf struct {
+	Name       string
+	OutC, ErrC chan string
+	*cmds.Dnf
 }
+
+func Dnf(name string, outC chan string, errC chan string) apptpl.Installer {
+	return &dnf{name, outC, errC, cmds.NewDnf(name)}
+}
+
+func (d *dnf) Install() (ok bool, err error)   { return d.Dnf.Install(d.OutC, d.ErrC) }
+func (d *dnf) Reinstall() (ok bool, err error) { return d.Dnf.Reinstall(d.OutC, d.ErrC) }
+func (d *dnf) Uninstall() (ok bool, err error) { return d.Dnf.Uninstall(d.OutC, d.ErrC) }

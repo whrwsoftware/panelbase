@@ -14,27 +14,22 @@ package controllers
 import (
 	"github.com/whrwsoftware/panelbase/apptpl"
 	"github.com/whrwsoftware/panelbase/cmd"
+	"github.com/whrwsoftware/panelbase/cmds"
 )
 
 type systemctl struct {
 	Name   string
 	VerCmd string
+	S      *cmds.Systemctl
 }
 
 func Systemctl(name string, verCmd string) apptpl.Controller {
-	return &systemctl{Name: name, VerCmd: verCmd}
+	return &systemctl{name, verCmd, cmds.NewSystemctl(name)}
 }
 
-func (s *systemctl) run(v string) (ok bool, err error) { _, ok, err = s.runWithOut(v); return }
-
-func (s *systemctl) runWithOut(v string) (str string, ok bool, err error) {
-	str, _, ok, err = cmd.Run("systemctl", v, s.Name)
-	return
-}
-
-func (s *systemctl) Start() (ok bool, err error)   { return s.run("start") }
-func (s *systemctl) Stop() (ok bool, err error)    { return s.run("stop") }
-func (s *systemctl) Restart() (ok bool, err error) { return s.run("restart") }
+func (s *systemctl) Start() (ok bool, err error)   { _, ok, err = s.S.Start(); return }
+func (s *systemctl) Stop() (ok bool, err error)    { _, ok, err = s.S.Stop(); return }
+func (s *systemctl) Restart() (ok bool, err error) { _, ok, err = s.S.Restart(); return }
 func (s *systemctl) Version() (v string, ok bool, err error) {
 	v, _, ok, err = cmd.RunFullCmd(s.VerCmd)
 	return

@@ -12,7 +12,6 @@
 package executor
 
 import (
-	"fmt"
 	"github.com/whrwsoftware/panelbase/cmd"
 	"os/exec"
 	"time"
@@ -37,7 +36,9 @@ func NewStep(id int, name string, args ...string) *Step {
 	return &Step{id: id, name: name, args: args}
 }
 
-func (s *Step) logPrefix() string { return fmt.Sprintf("[%d,%s \"%s\"]", s.id, s.cmd, s.args) }
+func (s *Step) Id() int           { return s.id }
+func (s *Step) CmdName() string   { return s.name }
+func (s *Step) CmdArgs() []string { return s.args }
 
 func (s *Step) Start(outC, errC chan<- Message) (ok bool, err error) {
 	var (

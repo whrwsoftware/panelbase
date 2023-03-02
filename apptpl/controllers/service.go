@@ -14,28 +14,23 @@ package controllers
 import (
 	"github.com/whrwsoftware/panelbase/apptpl"
 	"github.com/whrwsoftware/panelbase/cmd"
+	"github.com/whrwsoftware/panelbase/cmds"
 )
 
-type serviceCtl struct {
+type service struct {
 	Name   string
 	VerCmd string
+	S      *cmds.Service
 }
 
-func ServiceCtl(name string, verCmd string) apptpl.Controller {
-	return &serviceCtl{Name: name, VerCmd: verCmd}
+func Service(name string, verCmd string) apptpl.Controller {
+	return &service{name, verCmd, cmds.NewService(name)}
 }
 
-func (s *serviceCtl) run(v string) (ok bool, err error) { _, ok, err = s.runWithOut(v); return }
-
-func (s *serviceCtl) runWithOut(v string) (str string, ok bool, err error) {
-	str, _, ok, err = cmd.Run("service", s.Name, v)
-	return
-}
-
-func (s *serviceCtl) Start() (ok bool, err error)   { return s.run("start") }
-func (s *serviceCtl) Stop() (ok bool, err error)    { return s.run("stop") }
-func (s *serviceCtl) Restart() (ok bool, err error) { return s.run("restart") }
-func (s *serviceCtl) Version() (v string, ok bool, err error) {
+func (s *service) Start() (ok bool, err error)   { _, ok, err = s.S.Start(); return }
+func (s *service) Stop() (ok bool, err error)    { _, ok, err = s.S.Stop(); return }
+func (s *service) Restart() (ok bool, err error) { _, ok, err = s.S.Restart(); return }
+func (s *service) Version() (v string, ok bool, err error) {
 	v, _, ok, err = cmd.RunFullCmd(s.VerCmd)
 	return
 }

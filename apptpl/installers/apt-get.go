@@ -9,34 +9,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configurators
+package installers
 
 import (
-	"errors"
 	"github.com/whrwsoftware/panelbase/apptpl"
-	"os"
+	"github.com/whrwsoftware/panelbase/cmds"
 )
 
-var (
-	ErrNotFoundConf = errors.New("configurator: not found conf")
-)
-
-type (
-	file struct{ ConfMapping }
-	Conf struct {
-		Path string
-		Perm os.FileMode
-	}
-	ConfMapping map[string]Conf
-)
-
-func NewConf(path string, perm os.FileMode) Conf       { return Conf{Path: path, Perm: perm} }
-func File(confMapping ConfMapping) apptpl.Configurator { return &file{confMapping} }
-
-func (f *file) Configure(cfg apptpl.Cfg) (err error) {
-	confV, ok := f.ConfMapping[cfg.Name]
-	if !ok {
-		return ErrNotFoundConf
-	}
-	return os.WriteFile(confV.Path, []byte(cfg.Data), confV.Perm)
+type aptGet struct {
+	Name       string
+	OutC, ErrC chan string
+	*cmds.AptGet
 }
+
+func AptGet(name string, outC chan string, errC chan string) apptpl.Installer {
+	return &aptGet{name, outC, errC, cmds.NewAptGet(name)}
+}
+
+func (a *aptGet) Install() (ok bool, err error)   { return a.AptGet.Install(a.OutC, a.ErrC) }
+func (a *aptGet) Reinstall() (ok bool, err error) { return a.AptGet.Reinstall(a.OutC, a.ErrC) }
+func (a *aptGet) Uninstall() (ok bool, err error) { return a.AptGet.Uninstall(a.OutC, a.ErrC) }

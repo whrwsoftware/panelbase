@@ -9,34 +9,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configurators
+package tpl
 
 import (
-	"errors"
 	"github.com/whrwsoftware/panelbase/apptpl"
-	"os"
+	"github.com/whrwsoftware/panelbase/apptpl/controllers"
+	"github.com/whrwsoftware/panelbase/apptpl/installers"
 )
 
-var (
-	ErrNotFoundConf = errors.New("configurator: not found conf")
-)
-
-type (
-	file struct{ ConfMapping }
-	Conf struct {
-		Path string
-		Perm os.FileMode
-	}
-	ConfMapping map[string]Conf
-)
-
-func NewConf(path string, perm os.FileMode) Conf       { return Conf{Path: path, Perm: perm} }
-func File(confMapping ConfMapping) apptpl.Configurator { return &file{confMapping} }
-
-func (f *file) Configure(cfg apptpl.Cfg) (err error) {
-	confV, ok := f.ConfMapping[cfg.Name]
-	if !ok {
-		return ErrNotFoundConf
-	}
-	return os.WriteFile(confV.Path, []byte(cfg.Data), confV.Perm)
+func PacmanApp(name string, ver string, pkg string, outC chan string, errC chan string, checker apptpl.Checker, configurator apptpl.Configurator) apptpl.Applicable {
+	return apptpl.NewApplication(checker, installers.Pacman(pkg, outC, errC), controllers.Systemctl(name, "echo "+ver), configurator)
 }

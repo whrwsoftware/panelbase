@@ -11,16 +11,21 @@
 
 package installers
 
-import "github.com/whrwsoftware/panelbase/cmds"
+import (
+	"github.com/whrwsoftware/panelbase/apptpl"
+	"github.com/whrwsoftware/panelbase/cmds"
+)
 
 type rpm struct {
 	Name       string
 	OutC, ErrC chan string
+	*cmds.Rpm
 }
 
-func Rpm(name string, outC chan string, errC chan string) *rpm {
-	return &rpm{Name: name, OutC: outC, ErrC: errC}
+func Rpm(name string, outC chan string, errC chan string) apptpl.Installer {
+	return &rpm{name, outC, errC, cmds.NewRpm(name)}
 }
 
-func (r *rpm) Install() (ok bool, err error)   { return cmds.Rpm().Install(r.Name, r.OutC, r.ErrC) }
-func (r *rpm) Uninstall() (ok bool, err error) { return cmds.Rpm().Uninstall(r.Name, r.OutC, r.ErrC) }
+func (r *rpm) Install() (ok bool, err error)   { return r.Rpm.Install(r.OutC, r.ErrC) }
+func (r *rpm) Reinstall() (ok bool, err error) { return r.Rpm.Reinstall(r.OutC, r.ErrC) }
+func (r *rpm) Uninstall() (ok bool, err error) { return r.Rpm.Uninstall(r.OutC, r.ErrC) }
