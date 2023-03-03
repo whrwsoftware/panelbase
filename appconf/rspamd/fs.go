@@ -9,12 +9,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//go:generate go build -o yum
+package postfix
 
-package main
+import (
+	_ "embed"
+	"github.com/whrwsoftware/panelbase/appconf"
+)
 
-import "fmt"
+var (
+	//go:embed main.cf
+	FSMainCf string
+)
 
-func main() {
-	fmt.Println("yum app")
+const (
+	NameMainCf = "main.cf"
+	DistMainCf = "/etc/postfix/main.cf"
+)
+
+type Opt struct {
+	MyHostname string
+	MyDomain   string
+	MyOrigin   string
 }
+
+var (
+	GenMainCf = appconf.Gen[Opt]
+)
