@@ -12,26 +12,48 @@
 package postfix
 
 import (
+	"embed"
 	_ "embed"
 	"github.com/whrwsoftware/panelbase/appconf"
+	"os"
 )
 
 var (
-	//go:embed main.cf
-	FSMainCf string
+	//go:embed main.cf master.cf
+	fs embed.FS
 )
 
 const (
-	NameMainCf = "main.cf"
-	DistMainCf = "/etc/postfix/main.cf"
+	NameMainCf   = "main.cf"
+	NameMasterCf = "master.cf"
 )
 
-type Opt struct {
-	MyHostname string
-	MyDomain   string
-	MyOrigin   string
-}
+const (
+	DistMainCf   = "/etc/postfix/main.cf"
+	DistMasterCf = "/etc/postfix/master.cf"
+)
 
 var (
-	GenMainCf = appconf.Gen[Opt]
+	perm os.FileMode = 0644
+)
+
+var (
+	ConfBindMainCf   = appconf.NewConfBind[any](fs, NameMainCf, DistMainCf, perm)
+	ConfBindMasterCf = appconf.NewConfBind[any](fs, NameMasterCf, DistMasterCf, perm)
+)
+
+var ConfBinds = []*appconf.ConfBind[any]{
+	ConfBindMainCf,
+	ConfBindMasterCf,
+}
+
+type (
+	OptMainCf struct {
+		MyHostname  string
+		MyDomain    string
+		TLS         bool
+		TLSKeyFile  string
+		TLSCertFile string
+	}
+	OptMasterCf struct{}
 )

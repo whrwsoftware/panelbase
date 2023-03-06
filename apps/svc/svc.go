@@ -17,7 +17,7 @@ import (
 	"github.com/whrwsoftware/panelbase/apps"
 )
 
-type StdSvcTemplate struct {
+type StdTemplate struct {
 	Name string
 	Ver  string
 	Pkg  string
@@ -25,25 +25,25 @@ type StdSvcTemplate struct {
 	app.Configurator
 }
 
-func (s *StdSvcTemplate) CentOS6() apps.GetAppFunc {
+func (s *StdTemplate) CentOS6() apps.GetAppFunc {
 	return func(outC, errC chan string) app.Applicable {
 		return tpl.YumApp(s.Name, s.Ver, s.Pkg, outC, errC, s.Checker, s.Configurator)
 	}
 }
 
-func (s *StdSvcTemplate) CentOS7() apps.GetAppFunc { return s.CentOS6() }
+func (s *StdTemplate) CentOS7() apps.GetAppFunc { return s.CentOS6() }
 
-func (s *StdSvcTemplate) CentOS8() apps.GetAppFunc { return s.CentOS7() }
+func (s *StdTemplate) CentOS8() apps.GetAppFunc { return s.CentOS7() }
 
-func (s *StdSvcTemplate) Ubuntu() apps.GetAppFunc {
+func (s *StdTemplate) Ubuntu() apps.GetAppFunc {
 	return func(outC, errC chan string) app.Applicable {
 		return tpl.AptApp(s.Name, s.Ver, s.Pkg, outC, errC, s.Checker, s.Configurator)
 	}
 }
 
-func (s *StdSvcTemplate) Debian() apps.GetAppFunc { return s.Ubuntu() }
+func (s *StdTemplate) Debian() apps.GetAppFunc { return s.Ubuntu() }
 
-func (s *StdSvcTemplate) Arch() apps.GetAppFunc {
+func (s *StdTemplate) Arch() apps.GetAppFunc {
 	return func(outC, errC chan string) app.Applicable {
 		return tpl.PacmanApp(s.Name, s.Ver, s.Pkg, outC, errC, s.Checker, s.Configurator)
 	}

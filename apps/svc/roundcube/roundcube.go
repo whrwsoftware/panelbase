@@ -9,34 +9,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configurators
+package roundcube
 
 import (
-	"errors"
 	"github.com/whrwsoftware/panelbase/app"
-	"os"
+	"github.com/whrwsoftware/panelbase/app/checkers"
+	"github.com/whrwsoftware/panelbase/app/configurators"
+	"github.com/whrwsoftware/panelbase/appconf/dovecot"
+	"github.com/whrwsoftware/panelbase/apps"
+	"github.com/whrwsoftware/panelbase/apps/svc"
+	"github.com/whrwsoftware/panelbase/zvars/oss"
+)
+
+const (
+	name = "dovecot"
 )
 
 var (
-	ErrNotFoundConf = errors.New("configurator: not found conf")
+	checker      = checkers.NoChecker()
+	configurator = configurators.DefaultConfigurator(dovecot.ConfBinds)
 )
 
-type (
-	file struct{ ConfMapping }
-	Conf struct {
-		Path string
-		Perm os.FileMode
-	}
-	ConfMapping map[string]Conf
-)
-
-func NewConf(path string, perm os.FileMode) Conf    { return Conf{Path: path, Perm: perm} }
-func File(confMapping ConfMapping) app.Configurator { return &file{confMapping} }
-
-func (f *file) Configure(cfg app.Cfg) (err error) {
-	confV, ok := f.ConfMapping[cfg.Name]
-	if !ok {
-		return ErrNotFoundConf
-	}
-	return os.WriteFile(confV.Path, []byte(cfg.Data), confV.Perm)
+func GetApp(outC, errC chan string) (app app.Applicable) {
+	return apps.GetApp(&svc.StdTemplate{Name: name, Ver: "", Pkg: name, Checker: checker, Configurator: configurator}, oss.CurrentOS(), outC, errC)
 }

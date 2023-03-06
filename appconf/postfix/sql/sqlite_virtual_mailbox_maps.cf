@@ -1,2 +1,2 @@
-dbpath = /www/vmail/postfixadmin.db
+dbpath = /aaaaaaa/mail.db
 query = SELECT maildir FROM mailbox WHERE username='%s' AND active = 1

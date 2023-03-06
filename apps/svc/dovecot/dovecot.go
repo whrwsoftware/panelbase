@@ -10,3 +10,26 @@
 // limitations under the License.
 
 package dovecot
+
+import (
+	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/app/checkers"
+	"github.com/whrwsoftware/panelbase/app/configurators"
+	"github.com/whrwsoftware/panelbase/appconf/dovecot"
+	"github.com/whrwsoftware/panelbase/apps"
+	"github.com/whrwsoftware/panelbase/apps/svc"
+	"github.com/whrwsoftware/panelbase/zvars/oss"
+)
+
+const (
+	name = "dovecot"
+)
+
+var (
+	checker      = checkers.NoChecker()
+	configurator = configurators.DefaultConfigurator(dovecot.ConfBinds)
+)
+
+func GetApp(outC, errC chan string) (app app.Applicable) {
+	return apps.GetApp(&svc.StdTemplate{Name: name, Ver: "", Pkg: name, Checker: checker, Configurator: configurator}, oss.CurrentOS(), outC, errC)
+}

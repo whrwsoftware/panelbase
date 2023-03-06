@@ -27,9 +27,9 @@ const (
 
 var (
 	checker      = checkers.NoChecker()
-	configurator = configurators.File(configurators.ConfMapping{postfix.NameMainCf: configurators.Conf{Path: postfix.DistMainCf, Perm: 0644}})
+	configurator = configurators.DefaultConfigurator(postfix.ConfBinds)
 )
 
 func GetApp(outC, errC chan string) (app app.Applicable) {
-	return apps.GetApp(&svc.StdSvcTemplate{Name: name, Ver: "", Pkg: name, Checker: checker, Configurator: configurator}, oss.CurrentOS(), outC, errC)
+	return apps.GetApp(&svc.StdTemplate{Name: name, Ver: "", Pkg: name, Checker: checker, Configurator: configurator}, oss.CurrentOS(), outC, errC)
 }

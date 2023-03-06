@@ -55,6 +55,11 @@ func (etr *Executor) NextId() int { return len(etr.steps) + 1 }
 
 func (etr *Executor) Create(cmd string, args ...string) { etr.Add(NewStep(etr.NextId(), cmd, args...)) }
 
+func (etr *Executor) CreateFromFullCmd(cmd string) {
+	cmdName, args := ztools.SplitCmd(cmd)
+	etr.Create(cmdName, args...)
+}
+
 func (etr *Executor) Add(step *Step) {
 	if step != nil {
 		etr.steps = append(etr.steps, step)

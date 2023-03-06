@@ -13,19 +13,40 @@ package appconf
 
 import (
 	"bytes"
+	"embed"
+	"os"
 	"text/template"
 )
 
-func Gen[A any](tpl string, data A) (str string, err error) {
-	buf := bytes.NewBufferString("")
-	t, tErr := template.New("").Parse(tpl)
+type ConfBind[T any] struct {
+	FS         embed.FS
+	Name, Dist string
+	Perm       os.FileMode
+}
+
+func NewConfBind[T any](FS embed.FS, name string, dist string, perm os.FileMode) *ConfBind[T] {
+	return &ConfBind[T]{FS: FS, Name: name, Dist: dist, Perm: perm}
+}
+
+func (cb *ConfBind[T]) Configure(data T) (err error) {
+	buf, bErr := cb.FS.ReadFile(cb.Name)
+	if bErr != nil {
+		err = bErr
+		return
+	}
+	tpl, tErr := template.New("").Parse(string(buf[:]))
 	if tErr != nil {
 		err = tErr
 		return
 	}
-	if err = t.Execute(buf, data); err != nil {
+	var w bytes.Buffer
+	if err = tpl.Execute(&w, data); err != nil {
 		return
 	}
-	str = buf.String()
+
+	if err = os.WriteFile(cb.Dist, w.Bytes(), cb.Perm); err != nil {
+		return
+	}
+
 	return
 }

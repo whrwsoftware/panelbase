@@ -26,11 +26,18 @@ type Controller interface {
 	Version() (v string, ok bool, err error)
 }
 
-type Configurator interface{ Configure(cfg Cfg) (err error) }
+type Configurator interface {
+	Configure(m map[string]any) (err error)
+	ConfigurationLoader
+	ConfigurationCleaner
+}
 
-type Cfg struct {
-	Name string
-	Data string
+type ConfigurationLoader interface {
+	Load(name string) (v string, err error)
+}
+
+type ConfigurationCleaner interface {
+	Clean() (err error)
 }
 
 type Applicable interface {
@@ -47,6 +54,6 @@ type Application struct {
 	Configurator
 }
 
-func NewApplication(checker Checker, installer Installer, controller Controller, configurator Configurator) *Application {
+func NewApplication(checker Checker, installer Installer, controller Controller, configurator Configurator) Applicable {
 	return &Application{Checker: checker, Installer: installer, Controller: controller, Configurator: configurator}
 }
