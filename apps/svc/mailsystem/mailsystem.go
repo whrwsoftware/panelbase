@@ -23,7 +23,7 @@ func NewApp(postfixApp app.Application, dovecotApp app.Application) app.Applicab
 }
 
 func (a *App) Check() (ok bool, err error) {
-
+	return
 }
 
 func (a *App) Install() (ok bool, err error) {
