@@ -12,7 +12,6 @@
 package installers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
 
@@ -22,7 +21,7 @@ type dpkg struct {
 	*cmds.Dpkg
 }
 
-func Dpkg(name string, outC chan string, errC chan string) app.Installer {
+func Dpkg(name string, outC chan string, errC chan string) *dpkg {
 	return &dpkg{name, outC, errC, cmds.NewDpkg(name)}
 }
 

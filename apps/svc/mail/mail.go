@@ -9,13 +9,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mailsystem
+package mail
 
 import "github.com/whrwsoftware/panelbase/app"
 
 type App struct {
-	PostfixApp app.Application
-	DovecotApp app.Application
+	PostfixApp   app.Application
+	DovecotApp   app.Application
+	RoundcubeApp app.Application
 }
 
 func NewApp(postfixApp app.Application, dovecotApp app.Application) app.Applicable {
@@ -23,6 +24,11 @@ func NewApp(postfixApp app.Application, dovecotApp app.Application) app.Applicab
 }
 
 func (a *App) Check() (ok bool, err error) {
+	// 1. nginx @any
+	// 2. > php@
+	// 3. php-fpm
+	// 4. roundcube@1.6.1
+	// 5. roundcube
 	return
 }
 

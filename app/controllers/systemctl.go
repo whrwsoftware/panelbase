@@ -12,7 +12,6 @@
 package controllers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmd"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
@@ -23,7 +22,7 @@ type systemctl struct {
 	*cmds.Systemctl
 }
 
-func Systemctl(name string, verCmd string) app.Controller {
+func Systemctl(name string, verCmd string) *systemctl {
 	return &systemctl{name, verCmd, cmds.NewSystemctl(name)}
 }
 

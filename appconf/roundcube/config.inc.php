@@ -8,5 +8,3 @@ $config['support_url'] = '{{.SupportUrl}}';
 $config['des_key'] = 'vTovEk3kOkXuozWEOBT5NVdd';
 $config['username_domain'] = '{{.UsernameDomain}}';
 $config['plugins'] = [];
-
-

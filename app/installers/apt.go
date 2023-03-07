@@ -12,7 +12,6 @@
 package installers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
 
@@ -22,7 +21,7 @@ type apt struct {
 	*cmds.Apt
 }
 
-func Apt(name string, outC chan string, errC chan string) app.Installer {
+func Apt(name string, outC chan string, errC chan string) *apt {
 	return &apt{name, outC, errC, cmds.NewApt(name)}
 }
 

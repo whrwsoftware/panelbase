@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package roundcubemail
+package roundcube
 
 import (
 	"embed"
@@ -18,16 +18,18 @@ import (
 )
 
 var (
-	//go:embed config.inc.php
+	//go:embed config.inc.php roundcube.conf
 	fs embed.FS
 )
 
 const (
-	NameConfigIncPhp = "config.inc.php"
+	NameConfigIncPhp  = "config.inc.php"
+	NameRoundcubeConf = "roundcube.conf"
 )
 
 const (
-	DistConfigIncPhp = "/var/www/roundcubemail/config/config.inc.php"
+	DistConfigIncPhp  = "/duckcp/apps/roundcube/config/config.inc.php"
+	DistRoundcubeConf = "/duckcp/apps/www/conf/roundcube.conf"
 )
 
 var (
@@ -35,11 +37,13 @@ var (
 )
 
 var (
-	ConfBindConfigIncPhp = appconf.NewConfBind[any](fs, NameConfigIncPhp, DistConfigIncPhp, perm)
+	ConfBindConfigIncPhp  = appconf.NewConfBind[any](fs, NameConfigIncPhp, DistConfigIncPhp, perm)
+	ConfBindRoundcubeConf = appconf.NewConfBind[any](fs, NameRoundcubeConf, DistRoundcubeConf, perm)
 )
 
 var ConfBinds = []*appconf.ConfBind[any]{
 	ConfBindConfigIncPhp,
+	ConfBindRoundcubeConf,
 }
 
 type (
@@ -49,5 +53,15 @@ type (
 		SmtpHost       string // localhost:25
 		SupportUrl     string // mail.999dns.xyz
 		UsernameDomain string // 999dns.xyz
+	}
+	OptRoundcubeConf struct {
+		ServerName        string
+		Port              int
+		SSLPort           int
+		SSL               bool
+		SSLCertificate    string
+		SSLCertificateKey string
+		Root              string
+		FastCgiPass       string
 	}
 )

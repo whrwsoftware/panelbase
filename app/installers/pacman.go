@@ -12,7 +12,6 @@
 package installers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
 
@@ -22,7 +21,7 @@ type pacman struct {
 	*cmds.Pacman
 }
 
-func Pacman(name string, outC chan string, errC chan string) app.Installer {
+func Pacman(name string, outC chan string, errC chan string) *pacman {
 	return &pacman{name, outC, errC, cmds.NewPacman(name)}
 }
 

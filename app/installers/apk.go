@@ -12,7 +12,6 @@
 package installers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
 
@@ -22,7 +21,7 @@ type apk struct {
 	*cmds.Apk
 }
 
-func Apk(name string, outC chan string, errC chan string) app.Installer {
+func Apk(name string, outC chan string, errC chan string) *apk {
 	return &apk{name, outC, errC, cmds.NewApk(name)}
 }
 

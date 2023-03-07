@@ -12,7 +12,6 @@
 package controllers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/appconf/initd"
 	"github.com/whrwsoftware/panelbase/cmd"
 	"path/filepath"
@@ -23,9 +22,7 @@ type initD struct {
 	IsFullPath bool
 }
 
-func InitD(file string, isFullPath bool) app.Controller {
-	return &initD{File: file, IsFullPath: isFullPath}
-}
+func InitD(file string, isFullPath bool) *initD { return &initD{File: file, IsFullPath: isFullPath} }
 
 func (i *initD) run(v string) (ok bool, err error) { _, ok, err = i.runWithOut(v); return }
 

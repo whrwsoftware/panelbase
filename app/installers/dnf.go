@@ -12,7 +12,6 @@
 package installers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
 
@@ -22,7 +21,7 @@ type dnf struct {
 	*cmds.Dnf
 }
 
-func Dnf(name string, outC chan string, errC chan string) app.Installer {
+func Dnf(name string, outC chan string, errC chan string) *dnf {
 	return &dnf{name, outC, errC, cmds.NewDnf(name)}
 }
 

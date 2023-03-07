@@ -12,7 +12,6 @@
 package controllers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmd"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
@@ -23,7 +22,7 @@ type service struct {
 	*cmds.Service
 }
 
-func Service(name string, verCmd string) app.Controller {
+func Service(name string, verCmd string) *service {
 	return &service{name, verCmd, cmds.NewService(name)}
 }
 

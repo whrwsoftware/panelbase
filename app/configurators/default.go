@@ -24,7 +24,7 @@ type defaultConfigurator struct {
 	Cleaner app.ConfigurationCleaner
 }
 
-func DefaultConfigurator(ConfBind []*appconf.ConfBind[any]) app.Configurator {
+func DefaultConfigurator(ConfBind []*appconf.ConfBind[any]) *defaultConfigurator {
 	var cleanFile []string
 	if cbs := ConfBind; cbs != nil {
 		for _, cb := range cbs {

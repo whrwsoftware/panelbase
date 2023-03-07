@@ -4,11 +4,11 @@ After=network.target
 
 [Service]
 Type={{.Service.Type}}
-PIDFile=-{{.Service.PIDFile}}
-EnvironmentFile=-{{.Service.EnvironmentFile}}
-ExecStart=-{{.Service.ExecStart}}
-ExecReload=-{{.Service.ExecReload}}
-ExecStop=-{{.Service.ExecStop}}
+{{if .Service.PIDFile}}PIDFile=-{{.Service.PIDFileVal}}{{end}}
+{{if .Service.EnvironmentFile}}EnvironmentFile=-{{.Service.EnvironmentFileVal}}{{end}}
+{{if .Service.ExecStart}}ExecStart=-{{.Service.ExecStartVal}}{{end}}
+{{if .Service.ExecReload}}ExecReload=-{{.Service.ExecReloadVal}}{{end}}
+{{if .Service.ExecStop}}ExecStop=-{{.Service.ExecStopVal}}{{end}}
 
 [Install]
 WantedBy=multi-user.target

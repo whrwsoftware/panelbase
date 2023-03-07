@@ -9,15 +9,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package appmanager
+package managers
 
 import (
 	"encoding/json"
 	"errors"
 	"os"
 	"path"
-	"strings"
 	"sync"
+
+	appPkg "github.com/whrwsoftware/panelbase/app"
 )
 
 type fileManager struct {
@@ -26,10 +27,9 @@ type fileManager struct {
 	File string
 }
 
-func UseFileManager(file string)                { mgr = FileManager(file) }
-func UseFileManagerLoad(file string, load bool) { mgr = FileManagerLoad(file, load) }
-func FileManager(file string) Manager           { return FileManagerLoad(file, false) }
-func FileManagerLoad(file string, load bool) Manager {
+func FileManager(file string) *fileManager { return FileManagerLoad(file, false) }
+
+func FileManagerLoad(file string, load bool) *fileManager {
 	_ = os.MkdirAll(path.Dir(file), 0644)
 	if !load {
 		_ = os.Remove(file)
@@ -44,7 +44,7 @@ func FileManagerLoad(file string, load bool) Manager {
 	return &fileManager{&sync.Mutex{}, file}
 }
 
-func (f *fileManager) Add(app *App) (err error) {
+func (f *fileManager) Add(app *appPkg.Info) (err error) {
 	if !f.mu.TryLock() {
 		return errors.New("the file is busy now")
 	}
@@ -56,7 +56,7 @@ func (f *fileManager) Add(app *App) (err error) {
 	} else if apps != nil {
 		apps = append(apps, app)
 	} else {
-		apps = []*App{app}
+		apps = []*appPkg.Info{app}
 	}
 	if buf, bErr := json.Marshal(apps); bErr != nil {
 		err = bErr
@@ -67,7 +67,7 @@ func (f *fileManager) Add(app *App) (err error) {
 	return
 }
 
-func (f *fileManager) Update(app *App) (err error) {
+func (f *fileManager) Update(app *appPkg.Info) (err error) {
 	if !f.mu.TryLock() {
 		return errors.New("the file is busy now")
 	}
@@ -81,7 +81,7 @@ func (f *fileManager) Update(app *App) (err error) {
 		return errors.New("the app is not exists")
 	}
 
-	var findApp *App
+	var findApp *appPkg.Info
 
 	for _, a := range apps {
 		if a.Pkg == app.Pkg {
@@ -138,7 +138,7 @@ func (f *fileManager) Delete(pkg string) (err error) {
 		return errors.New("the app is not exists")
 	}
 
-	newApps := make([]*App, 0)
+	newApps := make([]*appPkg.Info, 0)
 
 	if findIndex == 0 {
 		newApps = append(newApps, apps[1:]...)
@@ -172,7 +172,7 @@ func (f *fileManager) AddTag(pkg string, tag string) (err error) {
 		return errors.New("the app is not exists")
 	}
 
-	var findApp *App
+	var findApp *appPkg.Info
 
 	for _, a := range apps {
 		if a.Pkg == pkg {
@@ -214,7 +214,7 @@ func (f *fileManager) DeleteTag(pkg string, tag string) (err error) {
 		return errors.New("the app is not exists")
 	}
 
-	var findApp *App
+	var findApp *appPkg.Info
 
 	for _, a := range apps {
 		if a.Pkg == pkg {
@@ -250,7 +250,7 @@ func (f *fileManager) Installed(pkg string) (err error) {
 		return errors.New("the app is not exists")
 	}
 
-	var findApp *App
+	var findApp *appPkg.Info
 
 	for _, a := range apps {
 		if a.Pkg == pkg {
@@ -289,7 +289,7 @@ func (f *fileManager) Uninstalled(pkg string) (err error) {
 		return errors.New("the app is not exists")
 	}
 
-	var findApp *App
+	var findApp *appPkg.Info
 
 	for _, a := range apps {
 		if a.Pkg == pkg {
@@ -318,8 +318,8 @@ func (f *fileManager) Uninstalled(pkg string) (err error) {
 	return
 }
 
-func (f *fileManager) Check(requiredApp ...RequiredApp) (err error) {
-	if requiredApp == nil || len(requiredApp) <= 0 {
+func (f *fileManager) Required(required ...appPkg.Required) (err error) {
+	if required == nil || len(required) <= 0 {
 		return nil
 	}
 	apps, aErr := f.FindAll()
@@ -332,7 +332,7 @@ func (f *fileManager) Check(requiredApp ...RequiredApp) (err error) {
 	}
 
 	var (
-		pkgMap  = map[string]*App{}
+		pkgMap  = map[string]*appPkg.Info{}
 		nameMap = map[string]struct{}{}
 	)
 
@@ -347,47 +347,28 @@ func (f *fileManager) Check(requiredApp ...RequiredApp) (err error) {
 	)
 
 loop:
-	for _, reqPkg := range requiredApp {
-		ootVer := reqPkg.OneOfThemVersion
+	for _, reqPkg := range required {
 		if _, ok := nameMap[reqPkg.Name]; !ok {
 			// not exists
 			notExistApp = append(notExistApp, reqPkg.Name)
 			continue loop
 		}
-		if ootVer == nil {
-			ootVer = []string{}
-		}
-		if len(ootVer) <= 0 {
-			for _, app := range apps {
-				if app.Name == reqPkg.Name && app.Installed {
-					continue loop
-				}
-			}
-		} else {
-			for _, ver := range ootVer {
-				for _, app := range apps {
-					if app.Name == reqPkg.Name && app.Version == ver && app.Installed {
-						continue loop
-					}
-				}
+		for _, app := range apps {
+			if app.Name == reqPkg.Name && app.Installed && app.VersionId >= reqPkg.VersionId {
+				continue loop
 			}
 		}
-		// not installed
-		if len(ootVer) == 0 {
-			notInstalledApp = append(notInstalledApp, reqPkg.Name)
-		} else {
-			notInstalledApp = append(notInstalledApp, reqPkg.Name+"("+strings.Join(ootVer, ",")+")")
-		}
+		notInstalledApp = append(notInstalledApp, reqPkg.Name+"@"+reqPkg.Version)
 	}
 
 	if len(notExistApp) > 0 || len(notInstalledApp) > 0 {
-		return &CheckError{notExistApp, notInstalledApp}
+		return &appPkg.CheckError{NotExistApp: notExistApp, NotInstallApp: notInstalledApp}
 	}
 
 	return
 }
 
-func (f *fileManager) FindAll() (apps []*App, err error) {
+func (f *fileManager) FindAll() (apps []*appPkg.Info, err error) {
 	if readFile, rErr := os.ReadFile(f.File); rErr != nil {
 		err = rErr
 		return
@@ -397,7 +378,7 @@ func (f *fileManager) FindAll() (apps []*App, err error) {
 	return
 }
 
-func (f *fileManager) FindByPkg(pkg string) (app *App, err error) {
+func (f *fileManager) FindByPkg(pkg string) (app *appPkg.Info, err error) {
 	if apps, aErr := f.FindAll(); aErr != nil {
 		err = aErr
 		return
@@ -412,7 +393,7 @@ func (f *fileManager) FindByPkg(pkg string) (app *App, err error) {
 	return
 }
 
-func (f *fileManager) FindsByType(typ Type) (app []*App, err error) {
+func (f *fileManager) FindsByType(typ appPkg.Type) (app []*appPkg.Info, err error) {
 	if apps, aErr := f.FindAll(); aErr != nil {
 		err = aErr
 		return
@@ -427,7 +408,7 @@ func (f *fileManager) FindsByType(typ Type) (app []*App, err error) {
 	return
 }
 
-func (f *fileManager) FindsByName(name string) (apps []*App, err error) {
+func (f *fileManager) FindsByName(name string) (apps []*appPkg.Info, err error) {
 	if fApps, aErr := f.FindAll(); aErr != nil {
 		err = aErr
 		return
@@ -441,7 +422,7 @@ func (f *fileManager) FindsByName(name string) (apps []*App, err error) {
 	return
 }
 
-func (f *fileManager) FindsByTag(tag string) (apps []*App, err error) {
+func (f *fileManager) FindsByTag(tag string) (apps []*appPkg.Info, err error) {
 	if fApps, aErr := f.FindAll(); aErr != nil {
 		err = aErr
 		return

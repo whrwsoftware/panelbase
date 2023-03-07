@@ -12,23 +12,49 @@
 package systemd
 
 import (
-	_ "embed"
+	"embed"
 	"github.com/whrwsoftware/panelbase/appconf"
+	"os"
 )
 
 var (
 	//go:embed system.service
-	FSService string
+	fs embed.FS
 )
 
 const (
 	RootService = "/etc/systemd/system/multi-user.target.wants"
 )
 
-type (
-	Opt struct{}
+var (
+	perm os.FileMode = 0644
 )
 
 var (
-	GenService = appconf.Gen[Opt]
+	ConfBindSystemService = func(name string) *appconf.ConfBind[any] {
+		return appconf.NewConfBind[any](fs, name+".service", RootService+name+".service", perm)
+	}
+)
+
+type (
+	OptSystemService struct {
+		Unit    OptSystemServiceUint
+		Service OptSystemServiceService
+	}
+	OptSystemServiceUint struct {
+		Description string
+	}
+	OptSystemServiceService struct {
+		Type               string
+		PIDFile            bool
+		PIDFileVal         string
+		EnvironmentFile    bool
+		EnvironmentFileVal string
+		ExecStart          bool
+		ExecStartVal       string
+		ExecReload         bool
+		ExecReloadVal      string
+		ExecStop           bool
+		ExecStopVal        string
+	}
 )

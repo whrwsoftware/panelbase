@@ -12,7 +12,6 @@
 package installers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
 
@@ -22,7 +21,7 @@ type rpm struct {
 	*cmds.Rpm
 }
 
-func Rpm(name string, outC chan string, errC chan string) app.Installer {
+func Rpm(name string, outC chan string, errC chan string) *rpm {
 	return &rpm{name, outC, errC, cmds.NewRpm(name)}
 }
 

@@ -12,7 +12,6 @@
 package controllers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmd"
 )
 
@@ -23,7 +22,7 @@ type commandLine struct {
 	VersionCmd string
 }
 
-func CommandLine(startCmd, stopCmd, restartCmd, versionCmd string) app.Controller {
+func CommandLine(startCmd, stopCmd, restartCmd, versionCmd string) *commandLine {
 	return &commandLine{StartCmd: startCmd, StopCmd: stopCmd, RestartCmd: restartCmd, VersionCmd: versionCmd}
 }
 

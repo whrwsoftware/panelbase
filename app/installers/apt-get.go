@@ -12,7 +12,6 @@
 package installers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
 
@@ -22,7 +21,7 @@ type aptGet struct {
 	*cmds.AptGet
 }
 
-func AptGet(name string, outC chan string, errC chan string) app.Installer {
+func AptGet(name string, outC chan string, errC chan string) *aptGet {
 	return &aptGet{name, outC, errC, cmds.NewAptGet(name)}
 }
 

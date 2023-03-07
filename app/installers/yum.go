@@ -12,7 +12,6 @@
 package installers
 
 import (
-	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
 )
 
@@ -22,7 +21,7 @@ type yum struct {
 	*cmds.Yum
 }
 
-func Yum(name string, outC chan string, errC chan string) app.Installer {
+func Yum(name string, outC chan string, errC chan string) *yum {
 	return &yum{name, outC, errC, cmds.NewYum(name)}
 }
 
