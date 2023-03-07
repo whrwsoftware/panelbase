@@ -11,24 +11,38 @@
 
 package mail
 
-import "github.com/whrwsoftware/panelbase/app"
+import (
+	"github.com/whrwsoftware/panelbase/app"
+)
+
+//Apache, Lighttpd, Nginx, IIS, Cherokee or Hiawatha web server
+//PHP Version 7.3 or greater1
+//MySQL/MariaDB, PostgreSQL, SQLite, MSSQL or Oracle database
+//SMTP server and IMAP server with IMAP4 rev1 support
 
 type App struct {
-	PostfixApp   app.Application
-	DovecotApp   app.Application
+	PostfixApp app.Application
+	DovecotApp app.Application
+
+	//Apache, Lighttpd, Nginx, IIS, Cherokee or Hiawatha web server
+	//PHP Version 7.3 or greater1
+	//MySQL/MariaDB, PostgreSQL, SQLite, MSSQL or Oracle database
+	//SMTP server and IMAP server with IMAP4 rev1 support
+
 	RoundcubeApp app.Application
 }
 
-func NewApp(postfixApp app.Application, dovecotApp app.Application) app.Applicable {
-	return &App{PostfixApp: postfixApp, DovecotApp: dovecotApp}
+func NewApp(postfixApp, dovecotApp, roundcubeApp app.Application) app.Applicable {
+	return &App{PostfixApp: postfixApp, DovecotApp: dovecotApp, RoundcubeApp: roundcubeApp}
 }
 
 func (a *App) Check() (ok bool, err error) {
-	// 1. nginx @any
-	// 2. > php@
-	// 3. php-fpm
-	// 4. roundcube@1.6.1
-	// 5. roundcube
+	// 1. nginx@any
+	// 2. >=php@7.3
+	// 3. >=php-fpm@7.3
+	// 4. =roundcube@1.6.1
+	// 5. =postfix@3.4.7
+	// 6. =dovecot@2.2.36
 	return
 }
 
