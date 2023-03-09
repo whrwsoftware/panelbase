@@ -28,7 +28,7 @@ type (
 		killed bool
 		async  bool
 
-		outC, errC chan<- Message
+		outC, errC chan<- string
 	}
 )
 
@@ -46,7 +46,7 @@ func NewExecutorSteps(async bool, stepCmd ...string) *Executor {
 	return etr
 }
 
-func (etr *Executor) Chan(outC, errC chan<- Message) {
+func (etr *Executor) Chan(outC, errC chan<- string) {
 	etr.outC = outC
 	etr.errC = errC
 }
@@ -139,12 +139,6 @@ func (etr *Executor) Exec() (ok bool, err error) {
 	}
 
 	ok, err = etr.execSync()
-	if etr.outC != nil {
-		close(etr.outC)
-	}
-	if etr.errC != nil {
-		close(etr.errC)
-	}
 	return
 }
 

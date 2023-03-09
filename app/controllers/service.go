@@ -12,24 +12,31 @@
 package controllers
 
 import (
-	"github.com/whrwsoftware/panelbase/cmd"
+	"fmt"
+	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
+	"github.com/whrwsoftware/panelbase/executor"
 )
 
 type service struct {
-	Name   string
-	VerCmd string
+	Name string
 	*cmds.Service
+	app.Logger
 }
 
-func Service(name string, verCmd string) *service {
-	return &service{name, verCmd, cmds.NewService(name)}
+func Service(name string, logger app.Logger) *service {
+	return &service{Name: name, Service: cmds.NewService(name), Logger: logger}
 }
 
-func (s *service) Start() (ok bool, err error)   { _, ok, err = s.Service.Start(); return }
-func (s *service) Stop() (ok bool, err error)    { _, ok, err = s.Service.Stop(); return }
-func (s *service) Restart() (ok bool, err error) { _, ok, err = s.Service.Restart(); return }
-func (s *service) Version() (v string, ok bool, err error) {
-	v, _, ok, err = cmd.RunFullCmd(s.VerCmd)
-	return
+func (s *service) run(cmd string) (ok bool, err error) {
+	return executor.NewBashExecutor(fmt.Sprintf("service %s %s", s.Name, cmd), s.File()).Exec().Release()
+}
+
+func (s *service) Enable() (ok bool, err error)  { return s.run("enable") }
+func (s *service) Disable() (ok bool, err error) { return s.run("disable") }
+func (s *service) Start() (ok bool, err error)   { return s.run("start") }
+func (s *service) Stop() (ok bool, err error)    { return s.run("stop") }
+func (s *service) Restart() (ok bool, err error) { return s.run("restart") }
+func (s *service) Status() (st string, ok bool, err error) {
+	return executor.NewBashExecutor(fmt.Sprintf("service %s %s", s.Name, "status"), s.File()).Run().OutRelease()
 }

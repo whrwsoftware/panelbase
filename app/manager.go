@@ -25,7 +25,7 @@ type manager interface {
 	DeleteTag(pkg string, tag string) (err error)
 	Installed(pkg string) (err error)
 	Uninstalled(pkg string) (err error)
-	Required(required ...Required) (err error)
+	Required(required ...*Required) (err error)
 	FindAll() (apps []*Info, err error)
 	FindByPkg(pkg string) (info *Info, err error)
 	FindsByType(typ Type) (infos []*Info, err error)
@@ -53,6 +53,10 @@ type Required struct {
 	Name      string
 	Version   string
 	VersionId int
+}
+
+func NewRequired(name string, version string, versionId int) *Required {
+	return &Required{Name: name, Version: version, VersionId: versionId}
 }
 
 type Type uint

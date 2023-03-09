@@ -49,10 +49,8 @@ func TestCurrentOS(t *testing.T) {
 	_ = os.MkdirAll("/etc", 0600)
 	defer func() { _ = os.Remove("/etc") }()
 	var (
-		createRedHatReleaseFile = func(text string) { _ = os.WriteFile(redHatReleasePath, []byte(text), 0600) }
-		createOsReleaseFile     = func(text string) { _ = os.WriteFile(osReleasePath, []byte(text), 0600) }
-		removeRedHatReleaseFile = func() { _ = os.Remove(redHatReleasePath) }
-		removeOsReleaseFile     = func() { _ = os.Remove(osReleasePath) }
+		createOsReleaseFile = func(text string) { _ = os.WriteFile(osReleasePath, []byte(text), 0600) }
+		removeOsReleaseFile = func() { _ = os.Remove(osReleasePath) }
 	)
 	tests := []struct {
 		name      string
@@ -61,7 +59,6 @@ func TestCurrentOS(t *testing.T) {
 		deferFunc func()
 	}{
 		{"unknown", Unknown, func() {}, func() {}},
-		{"centos6", CentOS6, func() { createRedHatReleaseFile(centos6Release.release) }, func() { removeRedHatReleaseFile() }},
 		{"centos7", CentOS7, func() { createOsReleaseFile(centos7Release.release) }, func() { removeOsReleaseFile() }},
 		{"centos8", CentOS8, func() { createOsReleaseFile(centos8Release.release) }, func() { removeOsReleaseFile() }},
 		{"ubuntu", Ubuntu, func() { createOsReleaseFile(ubuntuRelease.release) }, func() { removeOsReleaseFile() }},

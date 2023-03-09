@@ -18,17 +18,17 @@ import (
 	"text/template"
 )
 
-type ConfBind[T any] struct {
+type ConfBind struct {
 	FS         embed.FS
 	Name, Dist string
 	Perm       os.FileMode
 }
 
-func NewConfBind[T any](FS embed.FS, name string, dist string, perm os.FileMode) *ConfBind[T] {
-	return &ConfBind[T]{FS: FS, Name: name, Dist: dist, Perm: perm}
+func NewConfBind(FS embed.FS, name string, dist string, perm os.FileMode) *ConfBind {
+	return &ConfBind{FS: FS, Name: name, Dist: dist, Perm: perm}
 }
 
-func (cb *ConfBind[T]) Configure(data T) (err error) {
+func (cb *ConfBind) Configure(data any) (err error) {
 	buf, bErr := cb.FS.ReadFile(cb.Name)
 	if bErr != nil {
 		err = bErr

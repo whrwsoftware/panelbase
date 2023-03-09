@@ -318,7 +318,7 @@ func (f *fileManager) Uninstalled(pkg string) (err error) {
 	return
 }
 
-func (f *fileManager) Required(required ...appPkg.Required) (err error) {
+func (f *fileManager) Required(required ...*appPkg.Required) (err error) {
 	if required == nil || len(required) <= 0 {
 		return nil
 	}

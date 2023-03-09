@@ -11,21 +11,21 @@
 
 package cmds
 
-type Pacman struct{ pkg string }
+type pacman struct{ pkg string }
 
-func NewPacman(pkg string) *Pacman                                 { return &Pacman{pkg} }
-func (a *Pacman) run(v ...string) (out string, ok bool, err error) { return run("pacman", v...) }
-func (a *Pacman) start(v []string, outC, errC chan<- string) (ok bool, err error) {
+func Pacman(pkg string) *pacman                                    { return &pacman{pkg} }
+func (a *pacman) run(v ...string) (out string, ok bool, err error) { return run("pacman", v...) }
+func (a *pacman) start(v []string, outC, errC chan<- string) (ok bool, err error) {
 	return start("pacman", v, outC, errC)
 }
-func (a *Pacman) Version() (out string, ok bool, err error) { return a.run("--version") }
-func (a *Pacman) Search() (out string, ok bool, err error)  { return a.run("-S", "-s", a.pkg) }
-func (a *Pacman) Install(outC, errC chan<- string) (ok bool, err error) {
+func (a *pacman) Version() (out string, ok bool, err error) { return a.run("--version") }
+func (a *pacman) Search() (out string, ok bool, err error)  { return a.run("-S", "-s", a.pkg) }
+func (a *pacman) Install(outC, errC chan<- string) (ok bool, err error) {
 	return a.start([]string{"-S", "--noconfirm", a.pkg}, outC, errC)
 }
-func (a *Pacman) Reinstall(outC, errC chan<- string) (ok bool, err error) {
+func (a *pacman) Reinstall(outC, errC chan<- string) (ok bool, err error) {
 	return a.Install(outC, errC)
 }
-func (a *Pacman) Uninstall(outC, errC chan<- string) (ok bool, err error) {
+func (a *pacman) Uninstall(outC, errC chan<- string) (ok bool, err error) {
 	return a.start([]string{"-R", "-noconfirm", a.pkg}, outC, errC)
 }

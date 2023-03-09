@@ -31,8 +31,8 @@ var (
 )
 
 var (
-	ConfBindSystemService = func(name string) *appconf.ConfBind[any] {
-		return appconf.NewConfBind[any](fs, name+".service", RootService+name+".service", perm)
+	ConfBindSystemService = func(name string) *appconf.ConfBind {
+		return appconf.NewConfBind(fs, name+".service", RootService+name+".service", perm)
 	}
 )
 

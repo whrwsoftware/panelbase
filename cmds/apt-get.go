@@ -11,21 +11,21 @@
 
 package cmds
 
-type AptGet struct{ pkg string }
+type aptGet struct{ pkg string }
 
-func NewAptGet(pkg string) *AptGet                                 { return &AptGet{pkg} }
-func (a *AptGet) run(v ...string) (out string, ok bool, err error) { return run("apt-get", v...) }
-func (a *AptGet) start(v []string, outC, errC chan<- string) (ok bool, err error) {
+func AptGet(pkg string) *aptGet                                    { return &aptGet{pkg} }
+func (a *aptGet) run(v ...string) (out string, ok bool, err error) { return run("apt-get", v...) }
+func (a *aptGet) start(v []string, outC, errC chan<- string) (ok bool, err error) {
 	return start("apt-get", v, outC, errC)
 }
-func (a *AptGet) Version() (out string, ok bool, err error) { return a.run("--version") }
-func (a *AptGet) Search() (out string, ok bool, err error)  { return run("apt-cache", a.pkg) }
-func (a *AptGet) Install(outC, errC chan<- string) (ok bool, err error) {
+func (a *aptGet) Version() (out string, ok bool, err error) { return a.run("--version") }
+func (a *aptGet) Search() (out string, ok bool, err error)  { return run("apt-cache", a.pkg) }
+func (a *aptGet) Install(outC, errC chan<- string) (ok bool, err error) {
 	return a.start([]string{"install -y", a.pkg}, outC, errC)
 }
-func (a *AptGet) Reinstall(outC, errC chan<- string) (ok bool, err error) {
+func (a *aptGet) Reinstall(outC, errC chan<- string) (ok bool, err error) {
 	return a.start([]string{"reinstall -y", a.pkg}, outC, errC)
 }
-func (a *AptGet) Uninstall(outC, errC chan<- string) (ok bool, err error) {
+func (a *aptGet) Uninstall(outC, errC chan<- string) (ok bool, err error) {
 	return a.start([]string{"remove -y", a.pkg}, outC, errC)
 }

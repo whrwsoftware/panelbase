@@ -34,17 +34,16 @@ type OS string
 
 const (
 	Unknown OS = "unknown"
-	CentOS6    = "centos6"
 	CentOS7    = "centos7"
 	CentOS8    = "centos8"
+	CentOS9    = "centos9"
 	Debian     = "debian"
 	Ubuntu     = "ubuntu"
 	Arch       = "arch"
 )
 
 const (
-	redHatReleasePath = "/etc/redhat-release"
-	osReleasePath     = "/etc/os-release"
+	osReleasePath = "/etc/os-release"
 )
 
 func getOSId(str string) (id, versionId string) {
@@ -68,7 +67,8 @@ func getOSId(str string) (id, versionId string) {
 }
 
 func CurrentOS() (os OS) {
-	if bytes, _ := sos.ReadFile(osReleasePath); bytes != nil && len(bytes) > 0 {
+	bytes, _ := sos.ReadFile(osReleasePath)
+	if bytes != nil && len(bytes) > 0 {
 		id, versionId := getOSId(string(bytes))
 		if id != "" {
 			switch id {
@@ -87,11 +87,6 @@ func CurrentOS() (os OS) {
 				return Arch
 			}
 		}
-	} else if bytes, _ = sos.ReadFile(redHatReleasePath); bytes != nil && len(bytes) > 0 {
-		// CentOS release 6.10 (Final) -> CentOS release 6.9 (Final)
-		if b := regexp.MustCompile(`^CentOS release 6\.\d+\s\(Final\)$`).MatchString(string(bytes)); b {
-			return CentOS6
-		}
 	}
 	return Unknown
 }
@@ -103,8 +98,6 @@ type release struct {
 }
 
 var (
-	centos6Release = release{`CentOS release 6.9 (Final)`, "centos", ""}
-
 	centos7Release = release{`NAME="CentOS Linux"
 VERSION="7 (Core)"
 ID="centos"

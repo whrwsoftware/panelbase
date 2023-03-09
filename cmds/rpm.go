@@ -11,21 +11,21 @@
 
 package cmds
 
-type Rpm struct{ pkg string }
+type rpm struct{ pkg string }
 
-func NewRpm(pkg string) *Rpm                                    { return &Rpm{pkg} }
-func (r *Rpm) run(v ...string) (out string, ok bool, err error) { return run("rpm", v...) }
-func (r *Rpm) start(v []string, outC, errC chan<- string) (ok bool, err error) {
+func Rpm(pkg string) *rpm                                       { return &rpm{pkg} }
+func (r *rpm) run(v ...string) (out string, ok bool, err error) { return run("rpm", v...) }
+func (r *rpm) start(v []string, outC, errC chan<- string) (ok bool, err error) {
 	return start("rpm", v, outC, errC)
 }
-func (r *Rpm) Version() (out string, ok bool, err error) { return r.run("--version") }
-func (r *Rpm) Search() (out string, ok bool, err error)  { return r.run("search", r.pkg) }
-func (r *Rpm) Install(outC, errC chan<- string) (ok bool, err error) {
+func (r *rpm) Version() (out string, ok bool, err error) { return r.run("--version") }
+func (r *rpm) Search() (out string, ok bool, err error)  { return r.run("search", r.pkg) }
+func (r *rpm) Install(outC, errC chan<- string) (ok bool, err error) {
 	return r.start([]string{"-ivh", r.pkg}, outC, errC)
 }
-func (r *Rpm) Reinstall(outC, errC chan<- string) (ok bool, err error) {
+func (r *rpm) Reinstall(outC, errC chan<- string) (ok bool, err error) {
 	return r.Install(outC, errC)
 }
-func (r *Rpm) Uninstall(outC, errC chan<- string) (ok bool, err error) {
+func (r *rpm) Uninstall(outC, errC chan<- string) (ok bool, err error) {
 	return r.start([]string{"-evh", r.pkg}, outC, errC)
 }

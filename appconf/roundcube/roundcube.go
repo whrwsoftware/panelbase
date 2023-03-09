@@ -37,11 +37,11 @@ var (
 )
 
 var (
-	ConfBindConfigIncPhp  = appconf.NewConfBind[any](fs, NameConfigIncPhp, DistConfigIncPhp, perm)
-	ConfBindRoundcubeConf = appconf.NewConfBind[any](fs, NameRoundcubeConf, DistRoundcubeConf, perm)
+	ConfBindConfigIncPhp  = appconf.NewConfBind(fs, NameConfigIncPhp, DistConfigIncPhp, perm)
+	ConfBindRoundcubeConf = appconf.NewConfBind(fs, NameRoundcubeConf, DistRoundcubeConf, perm)
 )
 
-var ConfBinds = []*appconf.ConfBind[any]{
+var ConfBinds = []*appconf.ConfBind{
 	ConfBindConfigIncPhp,
 	ConfBindRoundcubeConf,
 }

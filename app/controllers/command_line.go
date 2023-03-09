@@ -12,28 +12,42 @@
 package controllers
 
 import (
-	"github.com/whrwsoftware/panelbase/cmd"
+	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/executor"
 )
 
 type commandLine struct {
+	EnableCmd  string
+	DisableCmd string
 	StartCmd   string
 	StopCmd    string
 	RestartCmd string
-	VersionCmd string
+	StatusCmd  string
+
+	app.Logger
 }
 
-func CommandLine(startCmd, stopCmd, restartCmd, versionCmd string) *commandLine {
-	return &commandLine{StartCmd: startCmd, StopCmd: stopCmd, RestartCmd: restartCmd, VersionCmd: versionCmd}
+func CommandLine(enableCmd, disableCmd, startCmd, stopCmd, restartCmd, statusCmd string, logger app.Logger) *commandLine {
+	return &commandLine{
+		EnableCmd:  enableCmd,
+		DisableCmd: disableCmd,
+		StartCmd:   startCmd,
+		StopCmd:    stopCmd,
+		RestartCmd: restartCmd,
+		StatusCmd:  statusCmd,
+		Logger:     logger,
+	}
 }
 
-func (c *commandLine) run(v string) (ok bool, err error) { _, ok, err = c.runWithOut(v); return }
-
-func (c *commandLine) runWithOut(v string) (s string, ok bool, err error) {
-	s, _, ok, err = cmd.RunFullCmd(v)
-	return
+func (c *commandLine) run(cmd string) (ok bool, err error) {
+	return executor.NewBashExecutor(cmd, c.File()).Exec().Release()
 }
 
-func (c *commandLine) Start() (ok bool, err error)             { return c.run(c.StartCmd) }
-func (c *commandLine) Stop() (ok bool, err error)              { return c.run(c.StopCmd) }
-func (c *commandLine) Restart() (ok bool, err error)           { return c.run(c.RestartCmd) }
-func (c *commandLine) Version() (v string, ok bool, err error) { return c.runWithOut(c.VersionCmd) }
+func (c *commandLine) Enable() (ok bool, err error)  { return c.run(c.EnableCmd) }
+func (c *commandLine) Disable() (ok bool, err error) { return c.run(c.DisableCmd) }
+func (c *commandLine) Start() (ok bool, err error)   { return c.run("start") }
+func (c *commandLine) Stop() (ok bool, err error)    { return c.run("stop") }
+func (c *commandLine) Restart() (ok bool, err error) { return c.run("restart") }
+func (c *commandLine) Status() (st string, ok bool, err error) {
+	return executor.NewBashExecutor(c.StatusCmd, "").Run().OutRelease()
+}

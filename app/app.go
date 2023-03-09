@@ -14,16 +14,24 @@ package app
 type Checker interface{ Check() (ok bool, err error) }
 
 type Installer interface {
+	Install(ver string) (ok bool, err error)
+	Uninstall(ver string) (ok bool, err error)
+	Reinstall(ver string) (ok bool, err error)
+}
+
+type VersionInstaller interface {
 	Install() (ok bool, err error)
 	Uninstall() (ok bool, err error)
 	Reinstall() (ok bool, err error)
 }
 
 type Controller interface {
+	Enable() (ok bool, err error)
+	Disable() (ok bool, err error)
 	Start() (ok bool, err error)
 	Stop() (ok bool, err error)
 	Restart() (ok bool, err error)
-	Version() (v string, ok bool, err error)
+	Status() (st string, ok bool, err error)
 }
 
 type Configurator interface {
@@ -40,11 +48,17 @@ type ConfigurationCleaner interface {
 	Clean() (err error)
 }
 
+type Logger interface {
+	File() string
+	Truncate() (err error)
+}
+
 type Applicable interface {
 	Checker
 	Installer
 	Controller
 	Configurator
+	Logger
 }
 
 type Application struct {
@@ -52,8 +66,15 @@ type Application struct {
 	Installer
 	Controller
 	Configurator
+	Logger
 }
 
-func NewApplication(checker Checker, installer Installer, controller Controller, configurator Configurator) Applicable {
-	return &Application{Checker: checker, Installer: installer, Controller: controller, Configurator: configurator}
+type BashFS interface {
+	Install() string
+	Uninstall() string
+	Reinstall() string
+}
+
+func NewApplication(checker Checker, installer Installer, controller Controller, configurator Configurator, logger Logger) Applicable {
+	return &Application{Checker: checker, Installer: installer, Controller: controller, Configurator: configurator, Logger: logger}
 }

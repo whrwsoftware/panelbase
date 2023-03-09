@@ -12,30 +12,30 @@
 package controllers
 
 import (
-	"github.com/whrwsoftware/panelbase/appconf/initd"
-	"github.com/whrwsoftware/panelbase/cmd"
-	"path/filepath"
+	"fmt"
+	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/executor"
 )
 
 type initD struct {
-	File       string
-	IsFullPath bool
+	BashFile string
+
+	app.Logger
 }
 
-func InitD(file string, isFullPath bool) *initD { return &initD{File: file, IsFullPath: isFullPath} }
-
-func (i *initD) run(v string) (ok bool, err error) { _, ok, err = i.runWithOut(v); return }
-
-func (i *initD) runWithOut(v string) (s string, ok bool, err error) {
-	if i.IsFullPath {
-		s, _, ok, err = cmd.Run(i.File, v)
-		return
-	}
-	s, _, ok, err = cmd.Run(filepath.Join(initd.RootInitD, i.File), v)
-	return
+func InitD(bashFile string, logger app.Logger) *initD {
+	return &initD{BashFile: bashFile, Logger: logger}
 }
 
-func (i *initD) Start() (ok bool, err error)             { return i.run("start") }
-func (i *initD) Stop() (ok bool, err error)              { return i.run("stop") }
-func (i *initD) Restart() (ok bool, err error)           { return i.run("restart") }
-func (i *initD) Version() (v string, ok bool, err error) { return i.runWithOut("version") }
+func (i *initD) run(cmd string) (ok bool, err error) {
+	return executor.NewBashExecutor(fmt.Sprintf("/bin/bash /etc/init.d/%s %s", i.BashFile, cmd), i.File()).Exec().Release()
+}
+
+func (i *initD) Enable() (ok bool, err error)  { return i.run("enable") }
+func (i *initD) Disable() (ok bool, err error) { return i.run("disable") }
+func (i *initD) Start() (ok bool, err error)   { return i.run("start") }
+func (i *initD) Stop() (ok bool, err error)    { return i.run("stop") }
+func (i *initD) Restart() (ok bool, err error) { return i.run("restart") }
+func (i *initD) Status() (st string, ok bool, err error) {
+	return executor.NewBashExecutor(fmt.Sprintf("/bin/bash /etc/init.d/%s %s", i.BashFile, "status"), i.File()).Run().OutRelease()
+}

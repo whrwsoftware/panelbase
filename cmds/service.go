@@ -15,6 +15,7 @@ type Service struct{ name string }
 
 func NewService(name string) *Service                               { return &Service{name} }
 func (s *Service) run(v ...string) (out string, ok bool, err error) { return run("service", v...) }
+func (s *Service) Enable() (out string, ok bool, err error)         { return s.run("enable", s.name) }
 func (s *Service) Start() (out string, ok bool, err error)          { return s.run("start", s.name) }
 func (s *Service) Stop() (out string, ok bool, err error)           { return s.run("stop", s.name) }
 func (s *Service) Restart() (out string, ok bool, err error)        { return s.run("restart", s.name) }

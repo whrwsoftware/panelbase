@@ -12,24 +12,31 @@
 package controllers
 
 import (
-	"github.com/whrwsoftware/panelbase/cmd"
+	"fmt"
+	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/cmds"
+	"github.com/whrwsoftware/panelbase/executor"
 )
 
 type systemctl struct {
-	Name   string
-	VerCmd string
+	Name string
 	*cmds.Systemctl
+	app.Logger
 }
 
-func Systemctl(name string, verCmd string) *systemctl {
-	return &systemctl{name, verCmd, cmds.NewSystemctl(name)}
+func Systemctl(name string, logger app.Logger) *systemctl {
+	return &systemctl{name, cmds.NewSystemctl(name), logger}
 }
 
-func (s *systemctl) Start() (ok bool, err error)   { _, ok, err = s.Systemctl.Start(); return }
-func (s *systemctl) Stop() (ok bool, err error)    { _, ok, err = s.Systemctl.Stop(); return }
-func (s *systemctl) Restart() (ok bool, err error) { _, ok, err = s.Systemctl.Restart(); return }
-func (s *systemctl) Version() (v string, ok bool, err error) {
-	v, _, ok, err = cmd.RunFullCmd(s.VerCmd)
-	return
+func (s *systemctl) run(cmd string) (ok bool, err error) {
+	return executor.NewBashExecutor(fmt.Sprintf("systemctl %s %s", cmd, s.Name), s.File()).Exec().Release()
+}
+
+func (s *systemctl) Enable() (ok bool, err error)  { return s.run("enable") }
+func (s *systemctl) Disable() (ok bool, err error) { return s.run("disable") }
+func (s *systemctl) Start() (ok bool, err error)   { return s.run("start") }
+func (s *systemctl) Stop() (ok bool, err error)    { return s.run("stop") }
+func (s *systemctl) Restart() (ok bool, err error) { return s.run("restart") }
+func (s *systemctl) Status() (st string, ok bool, err error) {
+	return executor.NewBashExecutor(fmt.Sprintf("systemctl %s %s", "status", s.Name), "").Run().OutRelease()
 }

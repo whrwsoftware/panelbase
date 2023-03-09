@@ -11,21 +11,21 @@
 
 package cmds
 
-type Apk struct{ pkg string }
+type apk struct{ pkg string }
 
-func NewApk(pkg string) *Apk                                    { return &Apk{pkg} }
-func (a *Apk) run(v ...string) (out string, ok bool, err error) { return run("apk", v...) }
-func (a *Apk) start(v []string, outC, errC chan<- string) (ok bool, err error) {
+func Apk(pkg string) *apk                                       { return &apk{pkg} }
+func (a *apk) run(v ...string) (out string, ok bool, err error) { return run("apk", v...) }
+func (a *apk) start(v []string, outC, errC chan<- string) (ok bool, err error) {
 	return start("apk", v, outC, errC)
 }
-func (a *Apk) Version() (out string, ok bool, err error) { return a.run("--version") }
-func (a *Apk) Search() (out string, ok bool, err error)  { return a.run("search", a.pkg) }
-func (a *Apk) Install(outC, errC chan<- string) (ok bool, err error) {
+func (a *apk) Version() (out string, ok bool, err error) { return a.run("--version") }
+func (a *apk) Search() (out string, ok bool, err error)  { return a.run("search", a.pkg) }
+func (a *apk) Install(outC, errC chan<- string) (ok bool, err error) {
 	return a.start([]string{"add", a.pkg}, outC, errC)
 }
-func (a *Apk) Reinstall(outC, errC chan<- string) (ok bool, err error) {
+func (a *apk) Reinstall(outC, errC chan<- string) (ok bool, err error) {
 	return a.Install(outC, errC)
 }
-func (a *Apk) Uninstall(outC, errC chan<- string) (ok bool, err error) {
+func (a *apk) Uninstall(outC, errC chan<- string) (ok bool, err error) {
 	return a.start([]string{"del", a.pkg}, outC, errC)
 }

@@ -38,13 +38,20 @@ var (
 )
 
 var (
-	ConfBindMainCf   = appconf.NewConfBind[any](fs, NameMainCf, DistMainCf, perm)
-	ConfBindMasterCf = appconf.NewConfBind[any](fs, NameMasterCf, DistMasterCf, perm)
+	ConfBindMainCf   = appconf.NewConfBind(fs, NameMainCf, DistMainCf, perm)
+	ConfBindMasterCf = appconf.NewConfBind(fs, NameMasterCf, DistMasterCf, perm)
 )
 
-var ConfBinds = []*appconf.ConfBind[any]{
+var ConfBinds = []*appconf.ConfBind{
 	ConfBindMainCf,
 	ConfBindMasterCf,
+}
+
+func ConfBindMap(optMainCf OptMainCf, optMasterCf OptMasterCf) map[string]any {
+	return map[string]any{
+		NameMainCf:   optMainCf,
+		NameMasterCf: optMasterCf,
+	}
 }
 
 type (
@@ -54,6 +61,7 @@ type (
 		TLS         bool
 		TLSKeyFile  string
 		TLSCertFile string
+		Version     string
 	}
 	OptMasterCf struct{}
 )

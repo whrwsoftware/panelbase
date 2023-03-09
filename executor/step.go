@@ -40,30 +40,8 @@ func (s *Step) Id() int           { return s.id }
 func (s *Step) CmdName() string   { return s.name }
 func (s *Step) CmdArgs() []string { return s.args }
 
-func (s *Step) Start(outC, errC chan<- Message) (ok bool, err error) {
-	var (
-		outCC = make(chan string, 1)
-		errCC = make(chan string, 1)
-	)
-	go func() {
-		for {
-			if outStr, okk := <-outCC; !okk {
-				break
-			} else if outC != nil {
-				outC <- Message{s, outStr, false}
-			}
-		}
-	}()
-	go func() {
-		for {
-			if errStr, okk := <-errCC; !okk {
-				break
-			} else if errC != nil {
-				outC <- Message{s, errStr, true}
-			}
-		}
-	}()
-	ok, err = cmd.Start(s.name, s.args, outCC, errCC, nil, func(outCmd *exec.Cmd) {
+func (s *Step) Start(outC, errC chan<- string) (ok bool, err error) {
+	ok, err = cmd.Start(s.name, s.args, outC, errC, nil, func(outCmd *exec.Cmd) {
 		if outCmd != nil {
 			s.cmd = outCmd
 			s.Started = true

@@ -11,21 +11,21 @@
 
 package cmds
 
-type Dpkg struct{ pkg string }
+type dpkg struct{ pkg string }
 
-func NewDpkg(pkg string) *Dpkg                                   { return &Dpkg{pkg} }
-func (d *Dpkg) run(v ...string) (out string, ok bool, err error) { return run("dpkg", v...) }
-func (d *Dpkg) start(v []string, outC, errC chan<- string) (ok bool, err error) {
+func Dpkg(pkg string) *dpkg                                      { return &dpkg{pkg} }
+func (d *dpkg) run(v ...string) (out string, ok bool, err error) { return run("dpkg", v...) }
+func (d *dpkg) start(v []string, outC, errC chan<- string) (ok bool, err error) {
 	return start("dpkg", v, outC, errC)
 }
-func (d *Dpkg) Version() (out string, ok bool, err error) { return d.run("--version") }
-func (d *Dpkg) Search() (out string, ok bool, err error)  { return d.run("search", d.pkg) }
-func (d *Dpkg) Install(outC, errC chan<- string) (ok bool, err error) {
+func (d *dpkg) Version() (out string, ok bool, err error) { return d.run("--version") }
+func (d *dpkg) Search() (out string, ok bool, err error)  { return d.run("search", d.pkg) }
+func (d *dpkg) Install(outC, errC chan<- string) (ok bool, err error) {
 	return d.start([]string{"-i", d.pkg}, outC, errC)
 }
-func (d *Dpkg) Reinstall(outC, errC chan<- string) (ok bool, err error) {
+func (d *dpkg) Reinstall(outC, errC chan<- string) (ok bool, err error) {
 	return d.Install(outC, errC)
 }
-func (d *Dpkg) Uninstall(outC, errC chan<- string) (ok bool, err error) {
+func (d *dpkg) Uninstall(outC, errC chan<- string) (ok bool, err error) {
 	return d.start([]string{"-r", d.pkg}, outC, errC)
 }

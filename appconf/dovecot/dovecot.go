@@ -49,17 +49,17 @@ var (
 )
 
 var (
-	ConfBindDovecotConf          = appconf.NewConfBind[any](fs, NameDovecotConf, DistDovecotConf, perm)
-	ConfBindConfD10AuthConf      = appconf.NewConfBind[any](fs, NameConfD10AuthConf, DistConfD10AuthConf, perm)
-	ConfBindConfD10MailConf      = appconf.NewConfBind[any](fs, NameConfD10MailConf, DistConfD10MailConf, perm)
-	ConfBindConfD10MasterConf    = appconf.NewConfBind[any](fs, NameConfD10MasterConf, DistConfD10MasterConf, perm)
-	ConfBindConfD10SslConf       = appconf.NewConfBind[any](fs, NameConfD10SslConf, DistConfD10SslConf, perm)
-	ConfBindConfD15MailboxesConf = appconf.NewConfBind[any](fs, NameConfD15MailboxesConf, DistConfD15MailboxesConf, perm)
-	ConfBindConfD20ImapConf      = appconf.NewConfBind[any](fs, NameConfD20ImapConf, DistConfD20ImapConf, perm)
-	ConfBindConfD20LmtpConf      = appconf.NewConfBind[any](fs, NameConfD20LmtpConf, DistConfD20LmtpConf, perm)
+	ConfBindDovecotConf          = appconf.NewConfBind(fs, NameDovecotConf, DistDovecotConf, perm)
+	ConfBindConfD10AuthConf      = appconf.NewConfBind(fs, NameConfD10AuthConf, DistConfD10AuthConf, perm)
+	ConfBindConfD10MailConf      = appconf.NewConfBind(fs, NameConfD10MailConf, DistConfD10MailConf, perm)
+	ConfBindConfD10MasterConf    = appconf.NewConfBind(fs, NameConfD10MasterConf, DistConfD10MasterConf, perm)
+	ConfBindConfD10SslConf       = appconf.NewConfBind(fs, NameConfD10SslConf, DistConfD10SslConf, perm)
+	ConfBindConfD15MailboxesConf = appconf.NewConfBind(fs, NameConfD15MailboxesConf, DistConfD15MailboxesConf, perm)
+	ConfBindConfD20ImapConf      = appconf.NewConfBind(fs, NameConfD20ImapConf, DistConfD20ImapConf, perm)
+	ConfBindConfD20LmtpConf      = appconf.NewConfBind(fs, NameConfD20LmtpConf, DistConfD20LmtpConf, perm)
 )
 
-var ConfBinds = []*appconf.ConfBind[any]{
+var ConfBinds = []*appconf.ConfBind{
 	ConfBindDovecotConf,
 	ConfBindConfD10AuthConf,
 	ConfBindConfD10MailConf,
@@ -68,6 +68,27 @@ var ConfBinds = []*appconf.ConfBind[any]{
 	ConfBindConfD15MailboxesConf,
 	ConfBindConfD20ImapConf,
 	ConfBindConfD20LmtpConf,
+}
+
+func ConfBindMap(optDovecotConf OptDovecotConf,
+	optConfD10AuthConf OptConfD10AuthConf,
+	optConfD10MailConf OptConfD10MailConf,
+	optConfD10MasterConf OptConfD10MasterConf,
+	optConfD10SslConf OptConfD10SslConf,
+	optConfD15MailboxesConf OptConfD15MailboxesConf,
+	optConfD20ImapConf OptConfD20ImapConf,
+	optConfD20LmtpConf OptConfD20LmtpConf,
+) map[string]any {
+	return map[string]any{
+		NameDovecotConf:          optDovecotConf,
+		NameConfD10AuthConf:      optConfD10AuthConf,
+		NameConfD10MailConf:      optConfD10MailConf,
+		NameConfD10MasterConf:    optConfD10MasterConf,
+		NameConfD10SslConf:       optConfD10SslConf,
+		NameConfD15MailboxesConf: optConfD15MailboxesConf,
+		NameConfD20ImapConf:      optConfD20ImapConf,
+		NameConfD20LmtpConf:      optConfD20LmtpConf,
+	}
 }
 
 type (

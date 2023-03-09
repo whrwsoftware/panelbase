@@ -28,7 +28,7 @@ func AddTag(pkg string, tag string) (err error)              { return app.Manage
 func DeleteTag(pkg string, tag string) (err error)           { return app.Manager.DeleteTag(pkg, tag) }
 func Installed(pkg string) (err error)                       { return app.Manager.Installed(pkg) }
 func Uninstalled(pkg string) (err error)                     { return app.Manager.Uninstalled(pkg) }
-func Required(required ...app.Required) (err error)          { return app.Manager.Required(required...) }
+func Required(required ...*app.Required) (err error)         { return app.Manager.Required(required...) }
 func FindAll() (infos []*app.Info, err error)                { return app.Manager.FindAll() }
 func FindByPkg(pkg string) (info *app.Info, err error)       { return app.Manager.FindByPkg(pkg) }
 func FindsByType(typ app.Type) (info []*app.Info, err error) { return app.Manager.FindsByType(typ) }
@@ -95,11 +95,11 @@ func Test_fileManager_Required(t *testing.T) {
 		t.Error(err.Error())
 	}
 	{
-		if err := Required(app.Required{Name: "app", Version: "1.0.0", VersionId: 1},
-			app.Required{Name: "app2", Version: "1.0.0", VersionId: 1},
-			app.Required{Name: "app3", Version: "1.0.0", VersionId: 1},
-			app.Required{Name: "app3"},
-			app.Required{Name: "app4"}); err == nil {
+		if err := Required(&app.Required{Name: "app", Version: "1.0.0", VersionId: 1},
+			&app.Required{Name: "app2", Version: "1.0.0", VersionId: 1},
+			&app.Required{Name: "app3", Version: "1.0.0", VersionId: 1},
+			&app.Required{Name: "app3"},
+			&app.Required{Name: "app4"}); err == nil {
 			t.Error("test failed!")
 		}
 	}
@@ -107,9 +107,9 @@ func Test_fileManager_Required(t *testing.T) {
 		_ = Installed("app@1.0.0")
 		_ = Installed("app2@1.0.0")
 		_ = Installed("app3@1.0.0")
-		if err := Required(app.Required{Name: "app", Version: "1.0.1", VersionId: 2},
-			app.Required{Name: "app2", Version: "1.0.0", VersionId: 1},
-			app.Required{Name: "app3", Version: "1.0.0", VersionId: 1}); err == nil {
+		if err := Required(&app.Required{Name: "app", Version: "1.0.1", VersionId: 2},
+			&app.Required{Name: "app2", Version: "1.0.0", VersionId: 1},
+			&app.Required{Name: "app3", Version: "1.0.0", VersionId: 1}); err == nil {
 			t.Error("test failed!")
 		}
 	}
@@ -118,9 +118,9 @@ func Test_fileManager_Required(t *testing.T) {
 		_ = Installed("app@1.0.1")
 		_ = Installed("app2@1.0.0")
 		_ = Installed("app3@1.0.0")
-		if err := Required(app.Required{Name: "app", Version: "1.0.1", VersionId: 2},
-			app.Required{Name: "app2", Version: "1.0.1", VersionId: 1},
-			app.Required{Name: "app3", Version: "1.0.0", VersionId: 1}); err != nil {
+		if err := Required(&app.Required{Name: "app", Version: "1.0.1", VersionId: 2},
+			&app.Required{Name: "app2", Version: "1.0.1", VersionId: 1},
+			&app.Required{Name: "app3", Version: "1.0.0", VersionId: 1}); err != nil {
 			t.Error("test failed!")
 		}
 	}

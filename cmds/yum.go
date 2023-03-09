@@ -11,21 +11,21 @@
 
 package cmds
 
-type Yum struct{ pkg string }
+type yum struct{ pkg string }
 
-func NewYum(pkg string) *Yum                                    { return &Yum{pkg} }
-func (y *Yum) run(v ...string) (out string, ok bool, err error) { return run("yum", v...) }
-func (y *Yum) start(v []string, outC, errC chan<- string) (ok bool, err error) {
+func Yum(pkg string) *yum                                       { return &yum{pkg} }
+func (y *yum) run(v ...string) (out string, ok bool, err error) { return run("yum", v...) }
+func (y *yum) start(v []string, outC, errC chan<- string) (ok bool, err error) {
 	return start("yum", v, outC, errC)
 }
-func (y *Yum) Version() (out string, ok bool, err error) { return y.run("--version") }
-func (y *Yum) Search() (out string, ok bool, err error)  { return y.run("search", y.pkg) }
-func (y *Yum) Install(outC, errC chan<- string) (ok bool, err error) {
+func (y *yum) Version() (out string, ok bool, err error) { return y.run("--version") }
+func (y *yum) Search() (out string, ok bool, err error)  { return y.run("search", y.pkg) }
+func (y *yum) Install(outC, errC chan<- string) (ok bool, err error) {
 	return y.start([]string{"install", "-y", y.pkg}, outC, errC)
 }
-func (y *Yum) Reinstall(outC, errC chan<- string) (ok bool, err error) {
+func (y *yum) Reinstall(outC, errC chan<- string) (ok bool, err error) {
 	return y.start([]string{"reinstall", "-y", y.pkg}, outC, errC)
 }
-func (y *Yum) Uninstall(outC, errC chan<- string) (ok bool, err error) {
+func (y *yum) Uninstall(outC, errC chan<- string) (ok bool, err error) {
 	return y.start([]string{"remove", "-y", y.pkg}, outC, errC)
 }
