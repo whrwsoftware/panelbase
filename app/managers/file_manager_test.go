@@ -20,20 +20,24 @@ import (
 
 var testPath = "/path/to/app.json"
 
-func UseFileManager(file string)                             { app.UseManager(FileManager(file)) }
-func Add(info *app.Info) (err error)                         { return app.Manager.Add(info) }
-func Update(info *app.Info) (err error)                      { return app.Manager.Update(info) }
-func Delete(pkg string) (err error)                          { return app.Manager.Delete(pkg) }
-func AddTag(pkg string, tag string) (err error)              { return app.Manager.AddTag(pkg, tag) }
-func DeleteTag(pkg string, tag string) (err error)           { return app.Manager.DeleteTag(pkg, tag) }
-func Installed(pkg string) (err error)                       { return app.Manager.Installed(pkg) }
-func Uninstalled(pkg string) (err error)                     { return app.Manager.Uninstalled(pkg) }
-func Required(required ...*app.Required) (err error)         { return app.Manager.Required(required...) }
-func FindAll() (infos []*app.Info, err error)                { return app.Manager.FindAll() }
-func FindByPkg(pkg string) (info *app.Info, err error)       { return app.Manager.FindByPkg(pkg) }
-func FindsByType(typ app.Type) (info []*app.Info, err error) { return app.Manager.FindsByType(typ) }
-func FindsByName(name string) (infos []*app.Info, err error) { return app.Manager.FindsByName(name) }
-func FindsByTag(tag string) (infos []*app.Info, err error)   { return app.Manager.FindsByTag(tag) }
+func UseFileManager(file string)                       { app.SetManager(FileManager(file)) }
+func Add(info *app.Info) (err error)                   { return app.GetManager().Add(info) }
+func Update(info *app.Info) (err error)                { return app.GetManager().Update(info) }
+func Delete(pkg string) (err error)                    { return app.GetManager().Delete(pkg) }
+func AddTag(pkg string, tag string) (err error)        { return app.GetManager().AddTag(pkg, tag) }
+func DeleteTag(pkg string, tag string) (err error)     { return app.GetManager().DeleteTag(pkg, tag) }
+func Installed(pkg string) (err error)                 { return app.GetManager().Installed(pkg) }
+func Uninstalled(pkg string) (err error)               { return app.GetManager().Uninstalled(pkg) }
+func Required(required ...*app.Required) (err error)   { return app.GetManager().Required(required...) }
+func FindAll() (infos []*app.Info, err error)          { return app.GetManager().FindAll() }
+func FindByPkg(pkg string) (info *app.Info, err error) { return app.GetManager().FindByPkg(pkg) }
+func FindsByType(typ app.Type) (info []*app.Info, err error) {
+	return app.GetManager().FindsByType(typ)
+}
+func FindsByName(name string) (infos []*app.Info, err error) {
+	return app.GetManager().FindsByName(name)
+}
+func FindsByTag(tag string) (infos []*app.Info, err error) { return app.GetManager().FindsByTag(tag) }
 
 func Test_fileManager_Add(t *testing.T) {
 	UseFileManager(testPath)

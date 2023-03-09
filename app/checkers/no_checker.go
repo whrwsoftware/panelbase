@@ -11,7 +11,9 @@
 
 package checkers
 
+import "github.com/whrwsoftware/panelbase/app"
+
 type noChecker struct{}
 
-func NoChecker() *noChecker                      { return &noChecker{} }
-func (n *noChecker) Check() (ok bool, err error) { return true, nil }
+func NoChecker() *noChecker                                 { return &noChecker{} }
+func (n *noChecker) Check(app.Manager) (ok bool, err error) { return true, nil }

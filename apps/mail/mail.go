@@ -14,7 +14,6 @@ package mail
 import (
 	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/apps"
-	"github.com/whrwsoftware/panelbase/appver"
 )
 
 type App struct {
@@ -38,19 +37,4 @@ func NewApp(postfixApp, dovecotApp, roundcubeApp app.Applicable, postfixVersion,
 		DovecotVersion:   dovecotVersion,
 		RoundcubeVersion: roundcubeVersion,
 	}
-}
-
-func (a *App) Check() (ok bool, err error) {
-	// 1. nginx@1.8.1
-	// 2. >=php@7.3
-	// 3. >=php-fpm@7.3
-	// 4. =roundcube@1.6.1
-	// 5. =postfix@3.7.4
-	// 6. =dovecot@2.3.17
-	err = app.Manager.Required(
-		app.NewRequired(appver.Nginx.Name, appver.NginxMinVersion().Version, appver.NginxMinVersion().VersionId), // nginx for min version
-		app.NewRequired(appver.Php.Name, appver.Php73Version().Version, appver.Php73Version().VersionId),         // >=php7.3 >=php-fpm@7.3
-	)
-	ok = true
-	return
 }

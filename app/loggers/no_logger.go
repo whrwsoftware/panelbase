@@ -9,27 +9,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package appver
+package loggers
 
-var dovecotMaxVersionId = 1000
+type noLogger struct{}
 
-func dovecotNextVersionId() (vi int) {
-	vi = dovecotMaxVersionId
-	dovecotMaxVersionId--
-	return
-}
-
-var dovecotVer = []*ver{
-	Ver("dovecot@2.3.17", "2.3.17", dovecotNextVersionId(), "/logs/duckcp-dovecot.log"),
-}
-
-var Dovecot = &struct {
-	Name        string
-	Provider    string
-	Description string
-	Ver         []*ver
-}{"dovecot", "官方", "", dovecotVer}
-
-func DovecotMinVersion() *ver { return Dovecot.Ver[len(Dovecot.Ver)-1] }
-func DovecotMaxVersion() *ver { return Dovecot.Ver[0] }
-func DovecotVersion() *ver    { return DovecotMaxVersion() }
+func NoLogger() *noLogger                 { return &noLogger{} }
+func (n *noLogger) File() string          { return "" }
+func (n *noLogger) Truncate() (err error) { return nil }

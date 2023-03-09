@@ -12,9 +12,9 @@
 package executor
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 type BashExecutor struct {
@@ -25,35 +25,58 @@ type BashExecutor struct {
 	out []byte
 	ok  bool
 	err error
+
+	debug bool
 }
 
-func NewBashExecutor(cmd string, logFile string) *BashExecutor {
+func NewBashExecutor(cmd string) *BashExecutor {
 	tempFile, _ := os.CreateTemp("", "bash-executor-script-*.sh")
 	if tempFile == nil {
 		panic("create temp file error")
 	}
 	_, _ = tempFile.WriteString(cmd)
 	_ = tempFile.Close()
-	return &BashExecutor{Cmd: cmd, bashFile: tempFile.Name(), logFile: logFile}
+	return &BashExecutor{Cmd: cmd, bashFile: tempFile.Name()}
 }
+
+func (b *BashExecutor) BindLog(logFile string) *BashExecutor { b.logFile = logFile; return b }
 
 func (b *BashExecutor) Exec() *BashExecutor {
 	b.ok = true
 	// bash postfix-uninstall.sh  > aaa.log 2>&1
-	arg0 := fmt.Sprintf("/bin/bash %s>>%s 2>&1", b.bashFile, b.logFile)
+	arg0Builder := &strings.Builder{}
+	arg0Builder.WriteString("/bin/bash ")
+	arg0Builder.WriteString(b.bashFile)
+	if b.logFile != "" {
+		arg0Builder.WriteString(">>")
+		arg0Builder.WriteString(b.logFile)
+	}
+	arg0Builder.WriteString(" 2>&1")
+	arg0 := arg0Builder.String()
+	arg0Builder.Reset()
 	b.err = exec.Command("/bin/bash", "-c", arg0).Run()
 	return b
 }
 
 func (b *BashExecutor) Run() *BashExecutor {
 	b.ok = true
-	arg0 := fmt.Sprintf("/bin/bash %s 2>&1", b.bashFile)
+	arg0Builder := &strings.Builder{}
+	arg0Builder.WriteString("/bin/bash ")
+	arg0Builder.WriteString(b.bashFile)
+	arg0Builder.WriteString(" 2>&1")
+	arg0 := arg0Builder.String()
+	arg0Builder.Reset()
 	b.out, b.err = exec.Command("/bin/bash", "-c", arg0).CombinedOutput()
 	return b
 }
 
+func (b *BashExecutor) Debug() *BashExecutor              { b.debug = true; return b }
+func (b *BashExecutor) SetDebug(debug bool) *BashExecutor { b.debug = debug; return b }
+
 func (b *BashExecutor) Release() (ok bool, err error) {
-	//_ = os.Remove(b.bashFile);
+	if !b.debug {
+		_ = os.Remove(b.bashFile)
+	}
 	return b.ok, b.err
 }
 

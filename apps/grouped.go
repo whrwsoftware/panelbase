@@ -36,9 +36,9 @@ func NewGroupApp(bundle ...*Bundle) *GroupedApp {
 	return &GroupedApp{bundle, configurators.DefaultConfigurationLoader()}
 }
 
-func (a *GroupedApp) Check() (ok bool, err error) {
+func (a *GroupedApp) Check(manager app.Manager) (ok bool, err error) {
 	for _, ba := range a.bundles {
-		if ok, err = ba.Check(); err != nil {
+		if ok, err = ba.Check(manager); err != nil {
 			return
 		}
 	}

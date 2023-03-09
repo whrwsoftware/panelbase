@@ -327,9 +327,6 @@ func (f *fileManager) Required(required ...*appPkg.Required) (err error) {
 		err = aErr
 		return
 	}
-	if apps == nil || len(apps) <= 0 {
-		return errors.New("the app is not exists")
-	}
 
 	var (
 		pkgMap  = map[string]*appPkg.Info{}

@@ -19,20 +19,29 @@ import (
 type bashInstaller struct {
 	app.BashFS
 	app.Logger
+	Debug bool
 }
 
 func BashInstaller(bashFS app.BashFS, logger app.Logger) *bashInstaller {
 	return &bashInstaller{BashFS: bashFS, Logger: logger}
 }
 
+func BashInstallerWithDebug(bashFS app.BashFS, logger app.Logger, debug bool) *bashInstaller {
+	return &bashInstaller{BashFS: bashFS, Logger: logger, Debug: debug}
+}
+
+func BashInstallerDebug(bashFS app.BashFS, logger app.Logger) *bashInstaller {
+	return BashInstallerWithDebug(bashFS, logger, true)
+}
+
 func (b *bashInstaller) Install() (ok bool, err error) {
-	return executor.NewBashExecutor(b.BashFS.Install(), b.File()).Exec().Release()
+	return executor.NewBashExecutor(b.BashFS.Install()).BindLog(b.File()).SetDebug(b.Debug).Exec().Release()
 }
 
 func (b *bashInstaller) Uninstall() (ok bool, err error) {
-	return executor.NewBashExecutor(b.BashFS.Uninstall(), b.File()).Exec().Release()
+	return executor.NewBashExecutor(b.BashFS.Uninstall()).BindLog(b.File()).SetDebug(b.Debug).Exec().Release()
 }
 
 func (b *bashInstaller) Reinstall() (ok bool, err error) {
-	return executor.NewBashExecutor(b.BashFS.Reinstall(), b.File()).Exec().Release()
+	return executor.NewBashExecutor(b.BashFS.Reinstall()).BindLog(b.File()).SetDebug(b.Debug).Exec().Release()
 }

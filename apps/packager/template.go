@@ -9,34 +9,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package roundcube
+package packager
 
 import (
 	"github.com/whrwsoftware/panelbase/app"
-	"github.com/whrwsoftware/panelbase/app/installers"
+	"github.com/whrwsoftware/panelbase/zvars/oss"
 )
 
-type template struct{}
-
-func Template() *template { return &template{} }
-
-func (t *template) CentOS7() app.Applicable {
-	return app.NewApplication(checker, installers.Versioned(installer), controller, configurator, logger)
+type template struct {
+	Pkg string
 }
 
-func (t *template) CentOS8() app.Applicable { return t.CentOS7() }
+func Template(pkg string) *template { return &template{Pkg: pkg} }
+
+func (t *template) CentOS7() app.Applicable {
+	return app.NewApplication(checker, installer(t.Pkg, oss.CentOS7, logger), controller, configurator, logger)
+}
+
+func (t *template) CentOS8() app.Applicable {
+	return app.NewApplication(checker, installer(t.Pkg, oss.CentOS8, logger), controller, configurator, logger)
+}
 
 func (t *template) Ubuntu() app.Applicable {
-	//TODO implement me
-	panic("implement me")
+	return app.NewApplication(checker, installer(t.Pkg, oss.Ubuntu, logger), controller, configurator, logger)
 }
 
 func (t *template) Debian() app.Applicable {
-	//TODO implement me
-	panic("implement me")
+	return app.NewApplication(checker, installer(t.Pkg, oss.Debian, logger), controller, configurator, logger)
 }
 
 func (t *template) Arch() app.Applicable {
-	//TODO implement me
-	panic("implement me")
+	return app.NewApplication(checker, installer(t.Pkg, oss.Arch, logger), controller, configurator, logger)
 }

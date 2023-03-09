@@ -46,6 +46,13 @@ var ConfBinds = []*appconf.ConfBind{
 	ConfBindRoundcubeConf,
 }
 
+func ConfBindMap(OptConfigIncPhp OptConfigIncPhp, optRoundcubeConf OptRoundcubeConf) map[string]any {
+	return map[string]any{
+		NameConfigIncPhp:  OptConfigIncPhp,
+		NameRoundcubeConf: optRoundcubeConf,
+	}
+}
+
 type (
 	OptConfigIncPhp struct {
 		DbFile         string // /tmp/mail.db

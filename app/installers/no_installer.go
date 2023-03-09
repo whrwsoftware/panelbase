@@ -9,27 +9,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package appver
+package installers
 
-var dovecotMaxVersionId = 1000
+type noInstaller struct{}
 
-func dovecotNextVersionId() (vi int) {
-	vi = dovecotMaxVersionId
-	dovecotMaxVersionId--
-	return
-}
-
-var dovecotVer = []*ver{
-	Ver("dovecot@2.3.17", "2.3.17", dovecotNextVersionId(), "/logs/duckcp-dovecot.log"),
-}
-
-var Dovecot = &struct {
-	Name        string
-	Provider    string
-	Description string
-	Ver         []*ver
-}{"dovecot", "官方", "", dovecotVer}
-
-func DovecotMinVersion() *ver { return Dovecot.Ver[len(Dovecot.Ver)-1] }
-func DovecotMaxVersion() *ver { return Dovecot.Ver[0] }
-func DovecotVersion() *ver    { return DovecotMaxVersion() }
+func NoInstaller() *noInstaller                                  { return &noInstaller{} }
+func (n *noInstaller) Install(ver string) (ok bool, err error)   { return false, nil }
+func (n *noInstaller) Uninstall(ver string) (ok bool, err error) { return false, nil }
+func (n *noInstaller) Reinstall(ver string) (ok bool, err error) { return false, nil }

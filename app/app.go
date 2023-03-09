@@ -11,7 +11,9 @@
 
 package app
 
-type Checker interface{ Check() (ok bool, err error) }
+type Checker interface {
+	Check(manager Manager) (ok bool, err error)
+}
 
 type Installer interface {
 	Install(ver string) (ok bool, err error)

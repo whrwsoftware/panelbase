@@ -29,7 +29,7 @@ func Systemctl(name string, logger app.Logger) *systemctl {
 }
 
 func (s *systemctl) run(cmd string) (ok bool, err error) {
-	return executor.NewBashExecutor(fmt.Sprintf("systemctl %s %s", cmd, s.Name), s.File()).Exec().Release()
+	return executor.NewBashExecutor(fmt.Sprintf("systemctl %s %s", cmd, s.Name)).BindLog(s.File()).Exec().Release()
 }
 
 func (s *systemctl) Enable() (ok bool, err error)  { return s.run("enable") }
@@ -38,5 +38,5 @@ func (s *systemctl) Start() (ok bool, err error)   { return s.run("start") }
 func (s *systemctl) Stop() (ok bool, err error)    { return s.run("stop") }
 func (s *systemctl) Restart() (ok bool, err error) { return s.run("restart") }
 func (s *systemctl) Status() (st string, ok bool, err error) {
-	return executor.NewBashExecutor(fmt.Sprintf("systemctl %s %s", "status", s.Name), "").Run().OutRelease()
+	return executor.NewBashExecutor(fmt.Sprintf("systemctl %s %s", "status", s.Name)).Run().OutRelease()
 }

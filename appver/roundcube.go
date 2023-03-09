@@ -20,7 +20,7 @@ func roundcubeNextVersionId() (vi int) {
 }
 
 var roundcubeVer = []*ver{
-	Ver("roundcube-1.6.1", "1.6.1", roundcubeNextVersionId(), ""),
+	Ver("roundcube@1.6.1", "1.6.1", roundcubeNextVersionId(), "/duckcp/logs/roundcube.log"),
 }
 
 var Roundcube = &struct {
@@ -32,4 +32,4 @@ var Roundcube = &struct {
 
 func RoundcubeMinVersion() *ver { return Roundcube.Ver[len(Roundcube.Ver)-1] }
 func RoundcubeMaxVersion() *ver { return Roundcube.Ver[0] }
-func RoundcubeVersion() *ver    { return Roundcube.Ver[0] }
+func RoundcubeVersion() *ver    { return RoundcubeMaxVersion() }

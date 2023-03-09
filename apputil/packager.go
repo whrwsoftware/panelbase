@@ -9,34 +9,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package roundcube
+package apputil
 
 import (
 	"github.com/whrwsoftware/panelbase/app"
-	"github.com/whrwsoftware/panelbase/app/installers"
+	"github.com/whrwsoftware/panelbase/apps"
+	"github.com/whrwsoftware/panelbase/apps/packager"
+	"github.com/whrwsoftware/panelbase/zvars/oss"
 )
 
-type template struct{}
-
-func Template() *template { return &template{} }
-
-func (t *template) CentOS7() app.Applicable {
-	return app.NewApplication(checker, installers.Versioned(installer), controller, configurator, logger)
-}
-
-func (t *template) CentOS8() app.Applicable { return t.CentOS7() }
-
-func (t *template) Ubuntu() app.Applicable {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (t *template) Debian() app.Applicable {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (t *template) Arch() app.Applicable {
-	//TODO implement me
-	panic("implement me")
+func GetPackagerApp(pkg string) app.Applicable {
+	return apps.GetApp(packager.Template(pkg), oss.CurrentOS())
 }

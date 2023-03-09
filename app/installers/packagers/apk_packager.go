@@ -9,27 +9,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package appver
+package packagers
 
-var dovecotMaxVersionId = 1000
+import "fmt"
 
-func dovecotNextVersionId() (vi int) {
-	vi = dovecotMaxVersionId
-	dovecotMaxVersionId--
-	return
-}
+type apkPackager struct{}
 
-var dovecotVer = []*ver{
-	Ver("dovecot@2.3.17", "2.3.17", dovecotNextVersionId(), "/logs/duckcp-dovecot.log"),
-}
-
-var Dovecot = &struct {
-	Name        string
-	Provider    string
-	Description string
-	Ver         []*ver
-}{"dovecot", "官方", "", dovecotVer}
-
-func DovecotMinVersion() *ver { return Dovecot.Ver[len(Dovecot.Ver)-1] }
-func DovecotMaxVersion() *ver { return Dovecot.Ver[0] }
-func DovecotVersion() *ver    { return DovecotMaxVersion() }
+func ApkPackager() *apkPackager                       { return &apkPackager{} }
+func (a *apkPackager) InstallCmd(pkg string) string   { return fmt.Sprintf("apk add %s", pkg) }
+func (a *apkPackager) UninstallCmd(pkg string) string { return fmt.Sprintf("apk del %s", pkg) }
+func (a *apkPackager) Reinstall(pkg string) string    { return fmt.Sprintf("apk add %s", pkg) }

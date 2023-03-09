@@ -9,27 +9,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package appver
+package latest
 
-var dovecotMaxVersionId = 1000
+import (
+	_ "embed"
+)
 
-func dovecotNextVersionId() (vi int) {
-	vi = dovecotMaxVersionId
-	dovecotMaxVersionId--
-	return
-}
+var (
+	//go:embed install.sh
+	install string
+	//go:embed uninstall.sh
+	uninstall string
+	//go:embed reinstall.sh
+	reinstall string
 
-var dovecotVer = []*ver{
-	Ver("dovecot@2.3.17", "2.3.17", dovecotNextVersionId(), "/logs/duckcp-dovecot.log"),
-}
+	FS = &fs{}
+)
 
-var Dovecot = &struct {
-	Name        string
-	Provider    string
-	Description string
-	Ver         []*ver
-}{"dovecot", "官方", "", dovecotVer}
+type fs struct{}
 
-func DovecotMinVersion() *ver { return Dovecot.Ver[len(Dovecot.Ver)-1] }
-func DovecotMaxVersion() *ver { return Dovecot.Ver[0] }
-func DovecotVersion() *ver    { return DovecotMaxVersion() }
+func (f *fs) Install() string   { return install }
+func (f *fs) Uninstall() string { return uninstall }
+func (f *fs) Reinstall() string { return reinstall }

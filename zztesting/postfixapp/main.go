@@ -13,6 +13,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/whrwsoftware/panelbase/app/managers"
 	appConf "github.com/whrwsoftware/panelbase/appconf/postfix"
 	"github.com/whrwsoftware/panelbase/apps"
 	"github.com/whrwsoftware/panelbase/apps/postfix"
@@ -22,6 +23,7 @@ import (
 )
 
 func main() {
+	manager := managers.FileManager("/duckcp/apps/manager/data.json")
 	currentOS := oss.CurrentOS()
 	version := appver.PostfixVersion().Version
 	fmt.Println("postfix control")
@@ -66,12 +68,12 @@ func main() {
 
 		case "10":
 			fmt.Println("start check")
-			fmt.Println(app.Check())
+			fmt.Println(app.Check(manager))
 			fmt.Println("end check")
 			break
 		case "11":
 			fmt.Println("start install")
-			if _, err := app.Check(); err != nil {
+			if _, err := app.Check(manager); err != nil {
 				fmt.Println(err)
 				break
 			}

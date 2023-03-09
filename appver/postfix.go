@@ -32,4 +32,4 @@ var Postfix = &struct {
 
 func PostfixMinVersion() *ver { return Postfix.Ver[len(Postfix.Ver)-1] }
 func PostfixMaxVersion() *ver { return Postfix.Ver[0] }
-func PostfixVersion() *ver    { return Postfix.Ver[0] }
+func PostfixVersion() *ver    { return PostfixMaxVersion() }

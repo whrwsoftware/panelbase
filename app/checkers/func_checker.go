@@ -11,6 +11,8 @@
 
 package checkers
 
+import "github.com/whrwsoftware/panelbase/app"
+
 type CheckFunc func() (ok bool, err error)
 
 type funcChecker struct {
@@ -19,7 +21,7 @@ type funcChecker struct {
 
 func FuncChecker(CheckFunc ...CheckFunc) *funcChecker { return &funcChecker{CheckFunc} }
 
-func (c *funcChecker) Check() (ok bool, err error) {
+func (c *funcChecker) Check(app.Manager) (ok bool, err error) {
 	if fns := c.CheckFunc; fns != nil && len(fns) > 0 {
 		for _, fn := range fns {
 			if ok, err = fn(); err != nil || !ok {

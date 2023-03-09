@@ -13,11 +13,12 @@ package app
 
 import "strings"
 
-var Manager manager
+var manager Manager
 
-func UseManager(mgr manager) { Manager = mgr }
+func SetManager(mgr Manager) { manager = mgr }
+func GetManager() Manager    { return manager }
 
-type manager interface {
+type Manager interface {
 	Add(info *Info) (err error)
 	Update(info *Info) (err error)
 	Delete(pkg string) (err error)

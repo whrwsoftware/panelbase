@@ -13,10 +13,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/app/managers"
-	appConf "github.com/whrwsoftware/panelbase/appconf/dovecot"
+	appConf "github.com/whrwsoftware/panelbase/appconf/roundcube"
 	"github.com/whrwsoftware/panelbase/apps"
-	"github.com/whrwsoftware/panelbase/apps/dovecot"
+	"github.com/whrwsoftware/panelbase/apps/roundcube"
 	"github.com/whrwsoftware/panelbase/appver"
 	"github.com/whrwsoftware/panelbase/zvars/oss"
 	"os"
@@ -24,17 +25,21 @@ import (
 
 func main() {
 	manager := managers.FileManager("/duckcp/apps/manager/data.json")
+
+	manager.Add(&app.Info{Name: appver.Nginx.Name, Version: appver.NginxMinVersion().Version, VersionId: appver.NginxMinVersion().VersionId, Installed: true})
+	manager.Add(&app.Info{Name: appver.Php.Name, Version: appver.Php73Version().Version, VersionId: appver.Php73Version().VersionId, Installed: true})
+
 	currentOS := oss.CurrentOS()
-	version := appver.DovecotVersion().Version
-	fmt.Println("dovecot control")
+	version := appver.RoundcubeVersion().Version
+	fmt.Println("roundcube control")
 	fmt.Println("------")
 	fmt.Println()
 	fmt.Println("current os =>", currentOS)
 	fmt.Println("current version =>", version)
 	fmt.Println()
-	var app = apps.GetApp(dovecot.Template(), currentOS)
+	var app = apps.GetApp(roundcube.Template(), currentOS)
 	if app == nil {
-		fmt.Println("dovecot: not support current os")
+		fmt.Println("roundcube: not support current os")
 		return
 	}
 
@@ -82,7 +87,7 @@ func main() {
 				break
 			}
 			fmt.Println("end install")
-			fmt.Println("dovecot installed")
+			fmt.Println("roundcube installed")
 			break
 		case "12":
 			fmt.Println("start uninstall")
@@ -91,7 +96,7 @@ func main() {
 				break
 			}
 			fmt.Println("end uninstall")
-			fmt.Println("dovecot uninstalled")
+			fmt.Println("roundcube uninstalled")
 			break
 		case "13":
 			fmt.Println("start reinstall")
@@ -100,7 +105,7 @@ func main() {
 				break
 			}
 			fmt.Println("end reinstall")
-			fmt.Println("dovecot reinstalled")
+			fmt.Println("roundcube reinstalled")
 			break
 
 		case "20":
@@ -110,7 +115,7 @@ func main() {
 				break
 			}
 			fmt.Println("end enable")
-			fmt.Println("dovecot enable")
+			fmt.Println("roundcube enable")
 			break
 		case "21":
 			fmt.Println("start disable")
@@ -119,7 +124,7 @@ func main() {
 				break
 			}
 			fmt.Println("end disable")
-			fmt.Println("dovecot disabled")
+			fmt.Println("roundcube disabled")
 			break
 		case "22":
 			fmt.Println("start start")
@@ -128,7 +133,7 @@ func main() {
 				break
 			}
 			fmt.Println("end start")
-			fmt.Println("dovecot started")
+			fmt.Println("roundcube started")
 			break
 		case "23":
 			fmt.Println("start stop")
@@ -137,7 +142,7 @@ func main() {
 				break
 			}
 			fmt.Println("end stop")
-			fmt.Println("dovecot stopped")
+			fmt.Println("roundcube stopped")
 			break
 		case "24":
 			fmt.Println("start restart")
@@ -146,14 +151,14 @@ func main() {
 				break
 			}
 			fmt.Println("end restart")
-			fmt.Println("dovecot restarted")
+			fmt.Println("roundcube restarted")
 			break
 		case "25":
 			fmt.Println("start status")
 			st, _, _ := app.Status()
 			fmt.Println(st)
 			fmt.Println("end status")
-			fmt.Println("dovecot status")
+			fmt.Println("roundcube status")
 			break
 
 		case "30":
@@ -165,30 +170,37 @@ func main() {
 				break
 			}
 			if err := app.Configure(appConf.ConfBindMap(
-				appConf.OptDovecotConf{},
-				appConf.OptConfD10AuthConf{DisablePlaintextAuth: "no", AuthDebug: "yes", AuthDebugPasswords: "yes"},
-				appConf.OptConfD10MailConf{},
-				appConf.OptConfD10MasterConf{},
-				appConf.OptConfD10SslConf{SSL: "no"},
-				appConf.OptConfD15MailboxesConf{},
-				appConf.OptConfD20ImapConf{},
-				appConf.OptConfD20LmtpConf{},
+				appConf.OptConfigIncPhp{
+					DbFile:         "/tmp/roundcube.db",
+					ImapHost:       "localhost:143",
+					SmtpHost:       "localhost:25",
+					SupportUrl:     "mail.v8dns.xyz",
+					UsernameDomain: "v8dns.xyz",
+				},
+				appConf.OptRoundcubeConf{
+					ServerName:  "mail.v8dns.xyz",
+					Port:        80,
+					SSLPort:     443,
+					SSL:         false,
+					Root:        "/duckcp/apps/roundcube",
+					FastCgiPass: "localhost:9000",
+				},
 			)); err != nil {
 				fmt.Println(err)
 				break
 			}
 			fmt.Println("end configure")
-			fmt.Println("dovecot configured")
+			fmt.Println("roundcube configured")
 			break
 		case "31":
 			fmt.Println("start load")
-			if val, err := app.Load(appConf.DistConfD10AuthConf); err != nil {
+			if val, err := app.Load(appConf.DistConfigIncPhp); err != nil {
 				fmt.Println(err)
 			} else {
 				fmt.Println(val)
 			}
 			fmt.Println("end load")
-			fmt.Println("dovecot loaded")
+			fmt.Println("roundcube loaded")
 			break
 		case "32":
 			fmt.Println("start clean")
@@ -196,7 +208,7 @@ func main() {
 				fmt.Println(err)
 			}
 			fmt.Println("end clean")
-			fmt.Println("dovecot cleaned")
+			fmt.Println("roundcube cleaned")
 			break
 
 		case "90":
@@ -207,7 +219,7 @@ func main() {
 				fmt.Println(string(logBuf))
 			}
 			fmt.Println("end cat")
-			fmt.Println("dovecot cut")
+			fmt.Println("roundcube cut")
 			break
 		case "91":
 			fmt.Println("start truncate")
@@ -215,13 +227,13 @@ func main() {
 				fmt.Println(err)
 			}
 			fmt.Println("end truncate")
-			fmt.Println("dovecot truncated")
+			fmt.Println("roundcube truncated")
 			break
 		case "92":
 			fmt.Println("start pwd")
 			fmt.Println(app.File())
 			fmt.Println("end pwd")
-			fmt.Println("dovecot pwd")
+			fmt.Println("roundcube pwd")
 			break
 
 		case "q":

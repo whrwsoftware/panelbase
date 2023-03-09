@@ -19,76 +19,36 @@ import (
 )
 
 type template struct {
-	Postfix   apps.GetAppTemplate
-	Dovecot   apps.GetAppTemplate
-	Roundcube apps.GetAppTemplate
+	PostfixAppTemplate, DovecotAppTemplate, RoundcubeAppTemplate apps.AppTemplate
 }
 
-func Template(postfix apps.GetAppTemplate, dovecot apps.GetAppTemplate, roundcube apps.GetAppTemplate) *template {
-	return &template{Postfix: postfix, Dovecot: dovecot, Roundcube: roundcube}
+func Template(postfixAppTemplate, dovecotAppTemplate, roundcubeAppTemplate apps.AppTemplate) *template {
+	return &template{postfixAppTemplate, dovecotAppTemplate, roundcubeAppTemplate}
 }
 
-func (t *template) CentOS7() apps.GetAppFunc {
-	return func(outC, errC chan string) app.Applicable {
-		return NewApp(
-			apps.GetApp(t.Postfix, oss.CentOS7, outC, errC),
-			apps.GetApp(t.Dovecot, oss.CentOS7, outC, errC),
-			apps.GetApp(t.Roundcube, oss.CentOS7, outC, errC),
-			appver.PostfixVersion().Version,
-			appver.DovecotVersion().Version,
-			appver.RoundcubeMaxVersion().Version,
-		)
-	}
+func (t *template) CentOS7() app.Applicable {
+	return NewApp(
+		apps.GetApp(t.PostfixAppTemplate, oss.CentOS7),
+		apps.GetApp(t.DovecotAppTemplate, oss.CentOS7),
+		apps.GetApp(t.RoundcubeAppTemplate, oss.CentOS7),
+		appver.PostfixVersion().Version,
+		appver.DovecotVersion().Version,
+		appver.RoundcubeMaxVersion().Version,
+	)
+}
+func (t *template) CentOS8() app.Applicable { return t.CentOS7() }
+
+func (t *template) Ubuntu() app.Applicable {
+	//TODO implement me
+	panic("implement me")
 }
 
-func (t *template) CentOS8() apps.GetAppFunc {
-	return func(outC, errC chan string) app.Applicable {
-		return NewApp(
-			apps.GetApp(t.Postfix, oss.CentOS8, outC, errC),
-			apps.GetApp(t.Dovecot, oss.CentOS8, outC, errC),
-			apps.GetApp(t.Roundcube, oss.CentOS8, outC, errC),
-			appver.PostfixVersion().Version,
-			appver.DovecotVersion().Version,
-			appver.RoundcubeMaxVersion().Version,
-		)
-	}
+func (t *template) Debian() app.Applicable {
+	//TODO implement me
+	panic("implement me")
 }
 
-func (t *template) Ubuntu() apps.GetAppFunc {
-	return func(outC, errC chan string) app.Applicable {
-		return NewApp(
-			apps.GetApp(t.Postfix, oss.Ubuntu, outC, errC),
-			apps.GetApp(t.Dovecot, oss.Ubuntu, outC, errC),
-			apps.GetApp(t.Roundcube, oss.Ubuntu, outC, errC),
-			appver.PostfixVersion().Version,
-			appver.DovecotVersion().Version,
-			appver.RoundcubeMaxVersion().Version,
-		)
-	}
-}
-
-func (t *template) Debian() apps.GetAppFunc {
-	return func(outC, errC chan string) app.Applicable {
-		return NewApp(
-			apps.GetApp(t.Postfix, oss.Debian, outC, errC),
-			apps.GetApp(t.Dovecot, oss.Debian, outC, errC),
-			apps.GetApp(t.Roundcube, oss.Debian, outC, errC),
-			appver.PostfixVersion().Version,
-			appver.DovecotVersion().Version,
-			appver.RoundcubeMaxVersion().Version,
-		)
-	}
-}
-
-func (t *template) Arch() apps.GetAppFunc {
-	return func(outC, errC chan string) app.Applicable {
-		return NewApp(
-			apps.GetApp(t.Postfix, oss.Arch, outC, errC),
-			apps.GetApp(t.Dovecot, oss.Arch, outC, errC),
-			apps.GetApp(t.Roundcube, oss.Arch, outC, errC),
-			appver.PostfixVersion().Version,
-			appver.DovecotVersion().Version,
-			appver.RoundcubeMaxVersion().Version,
-		)
-	}
+func (t *template) Arch() app.Applicable {
+	//TODO implement me
+	panic("implement me")
 }

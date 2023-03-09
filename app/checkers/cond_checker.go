@@ -11,7 +11,10 @@
 
 package checkers
 
-import "errors"
+import (
+	"errors"
+	"github.com/whrwsoftware/panelbase/app"
+)
 
 var (
 	ErrCondChecker = errors.New("cond_checker: cond check not pass")
@@ -31,7 +34,7 @@ func CondChecker(valueFunc ValueFunc, condFunc CondFunc, expect any) *condChecke
 	return &condChecker{ValueFunc: valueFunc, CondFunc: condFunc, Expect: expect}
 }
 
-func (c *condChecker) Check() (ok bool, err error) {
+func (c *condChecker) Check(app.Manager) (ok bool, err error) {
 	if fn := c.ValueFunc; fn != nil {
 		if cFn := c.CondFunc; cFn != nil {
 			if ok = cFn(c.Expect, fn()); !ok {

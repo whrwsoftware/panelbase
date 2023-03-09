@@ -29,7 +29,7 @@ func Service(name string, logger app.Logger) *service {
 }
 
 func (s *service) run(cmd string) (ok bool, err error) {
-	return executor.NewBashExecutor(fmt.Sprintf("service %s %s", s.Name, cmd), s.File()).Exec().Release()
+	return executor.NewBashExecutor(fmt.Sprintf("service %s %s", s.Name, cmd)).BindLog(s.File()).Exec().Release()
 }
 
 func (s *service) Enable() (ok bool, err error)  { return s.run("enable") }
@@ -38,5 +38,5 @@ func (s *service) Start() (ok bool, err error)   { return s.run("start") }
 func (s *service) Stop() (ok bool, err error)    { return s.run("stop") }
 func (s *service) Restart() (ok bool, err error) { return s.run("restart") }
 func (s *service) Status() (st string, ok bool, err error) {
-	return executor.NewBashExecutor(fmt.Sprintf("service %s %s", s.Name, "status"), s.File()).Run().OutRelease()
+	return executor.NewBashExecutor(fmt.Sprintf("service %s %s", s.Name, "status")).Run().OutRelease()
 }

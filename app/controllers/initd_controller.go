@@ -28,7 +28,7 @@ func InitD(bashFile string, logger app.Logger) *initD {
 }
 
 func (i *initD) run(cmd string) (ok bool, err error) {
-	return executor.NewBashExecutor(fmt.Sprintf("/bin/bash /etc/init.d/%s %s", i.BashFile, cmd), i.File()).Exec().Release()
+	return executor.NewBashExecutor(fmt.Sprintf("/bin/bash /etc/init.d/%s %s", i.BashFile, cmd)).BindLog(i.File()).Exec().Release()
 }
 
 func (i *initD) Enable() (ok bool, err error)  { return i.run("enable") }
@@ -37,5 +37,5 @@ func (i *initD) Start() (ok bool, err error)   { return i.run("start") }
 func (i *initD) Stop() (ok bool, err error)    { return i.run("stop") }
 func (i *initD) Restart() (ok bool, err error) { return i.run("restart") }
 func (i *initD) Status() (st string, ok bool, err error) {
-	return executor.NewBashExecutor(fmt.Sprintf("/bin/bash /etc/init.d/%s %s", i.BashFile, "status"), i.File()).Run().OutRelease()
+	return executor.NewBashExecutor(fmt.Sprintf("/bin/bash /etc/init.d/%s %s", i.BashFile, "status")).Run().OutRelease()
 }

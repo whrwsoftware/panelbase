@@ -40,7 +40,7 @@ func CommandLine(enableCmd, disableCmd, startCmd, stopCmd, restartCmd, statusCmd
 }
 
 func (c *commandLine) run(cmd string) (ok bool, err error) {
-	return executor.NewBashExecutor(cmd, c.File()).Exec().Release()
+	return executor.NewBashExecutor(cmd).BindLog(c.File()).Exec().Release()
 }
 
 func (c *commandLine) Enable() (ok bool, err error)  { return c.run(c.EnableCmd) }
@@ -49,5 +49,5 @@ func (c *commandLine) Start() (ok bool, err error)   { return c.run("start") }
 func (c *commandLine) Stop() (ok bool, err error)    { return c.run("stop") }
 func (c *commandLine) Restart() (ok bool, err error) { return c.run("restart") }
 func (c *commandLine) Status() (st string, ok bool, err error) {
-	return executor.NewBashExecutor(c.StatusCmd, "").Run().OutRelease()
+	return executor.NewBashExecutor(c.StatusCmd).Run().OutRelease()
 }

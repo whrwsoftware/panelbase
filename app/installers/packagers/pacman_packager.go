@@ -9,27 +9,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package appver
+package packagers
 
-var dovecotMaxVersionId = 1000
+import "fmt"
 
-func dovecotNextVersionId() (vi int) {
-	vi = dovecotMaxVersionId
-	dovecotMaxVersionId--
-	return
+type pacmanPackager struct{}
+
+func PacmanPackager() *pacmanPackager { return &pacmanPackager{} }
+func (*pacmanPackager) InstallCmd(pkg string) string {
+	return fmt.Sprintf("pacman -S --noconfirm %s", pkg)
 }
-
-var dovecotVer = []*ver{
-	Ver("dovecot@2.3.17", "2.3.17", dovecotNextVersionId(), "/logs/duckcp-dovecot.log"),
+func (*pacmanPackager) UninstallCmd(pkg string) string {
+	return fmt.Sprintf("pacman -R --noconfirm %s", pkg)
 }
-
-var Dovecot = &struct {
-	Name        string
-	Provider    string
-	Description string
-	Ver         []*ver
-}{"dovecot", "官方", "", dovecotVer}
-
-func DovecotMinVersion() *ver { return Dovecot.Ver[len(Dovecot.Ver)-1] }
-func DovecotMaxVersion() *ver { return Dovecot.Ver[0] }
-func DovecotVersion() *ver    { return DovecotMaxVersion() }
+func (*pacmanPackager) Reinstall(pkg string) string {
+	return fmt.Sprintf("pacman -S --noconfirm %s", pkg)
+}
