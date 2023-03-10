@@ -13,8 +13,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/whrwsoftware/panelbase/app/managers"
 	appConf "github.com/whrwsoftware/panelbase/appconf/postfix"
+	"github.com/whrwsoftware/panelbase/appmanager/managers"
 	"github.com/whrwsoftware/panelbase/apps"
 	"github.com/whrwsoftware/panelbase/apps/postfix"
 	"github.com/whrwsoftware/panelbase/appver"
@@ -23,7 +23,7 @@ import (
 )
 
 func main() {
-	manager := managers.FileManager("/duckcp/apps/manager/data.json")
+	manager := managers.SqliteManager("/duckcp/apps/manager/data.db")
 	currentOS := oss.CurrentOS()
 	version := appver.PostfixVersion().Version
 	fmt.Println("postfix control")
@@ -32,7 +32,7 @@ func main() {
 	fmt.Println("current os =>", currentOS)
 	fmt.Println("current version =>", version)
 	fmt.Println()
-	var app = apps.GetApp(postfix.Template(), currentOS)
+	var app = apps.GetApp(postfix.Template(), manager, currentOS)
 	if app == nil {
 		fmt.Println("postfix: not support current os")
 		return

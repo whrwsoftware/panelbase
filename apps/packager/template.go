@@ -13,6 +13,7 @@ package packager
 
 import (
 	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/appmanager"
 	"github.com/whrwsoftware/panelbase/zvars/oss"
 )
 
@@ -22,22 +23,22 @@ type template struct {
 
 func Template(pkg string) *template { return &template{Pkg: pkg} }
 
-func (t *template) CentOS7() app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.CentOS7, logger), controller, configurator, logger)
+func (t *template) CentOS7(manager appmanager.Manager) app.Applicable {
+	return app.NewApplication(checker, installer(t.Pkg, oss.CentOS7, logger), controller, configurator, logger, manager)
 }
 
-func (t *template) CentOS8() app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.CentOS8, logger), controller, configurator, logger)
+func (t *template) CentOS8(manager appmanager.Manager) app.Applicable {
+	return app.NewApplication(checker, installer(t.Pkg, oss.CentOS8, logger), controller, configurator, logger, manager)
 }
 
-func (t *template) Ubuntu() app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.Ubuntu, logger), controller, configurator, logger)
+func (t *template) Ubuntu(manager appmanager.Manager) app.Applicable {
+	return app.NewApplication(checker, installer(t.Pkg, oss.Ubuntu, logger), controller, configurator, logger, manager)
 }
 
-func (t *template) Debian() app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.Debian, logger), controller, configurator, logger)
+func (t *template) Debian(manager appmanager.Manager) app.Applicable {
+	return app.NewApplication(checker, installer(t.Pkg, oss.Debian, logger), controller, configurator, logger, manager)
 }
 
-func (t *template) Arch() app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.Arch, logger), controller, configurator, logger)
+func (t *template) Arch(manager appmanager.Manager) app.Applicable {
+	return app.NewApplication(checker, installer(t.Pkg, oss.Arch, logger), controller, configurator, logger, manager)
 }

@@ -9,27 +9,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package checkers
+package latest
 
 import (
-	"github.com/whrwsoftware/panelbase/appmanager"
+	_ "embed"
 )
 
-type CheckFunc func() (ok bool, err error)
+var (
+	//go:embed install.sh
+	install string
+	//go:embed uninstall.sh
+	uninstall string
+	//go:embed reinstall.sh
+	reinstall string
 
-type funcChecker struct {
-	CheckFunc []CheckFunc
-}
+	FS = &fs{}
+)
 
-func FuncChecker(CheckFunc ...CheckFunc) *funcChecker { return &funcChecker{CheckFunc} }
+type fs struct{}
 
-func (c *funcChecker) Check(appmanager.Manager) (ok bool, err error) {
-	if fns := c.CheckFunc; fns != nil && len(fns) > 0 {
-		for _, fn := range fns {
-			if ok, err = fn(); err != nil || !ok {
-				return false, err
-			}
-		}
-	}
-	return true, nil
-}
+func (f *fs) Install() string   { return install }
+func (f *fs) Uninstall() string { return uninstall }
+func (f *fs) Reinstall() string { return reinstall }

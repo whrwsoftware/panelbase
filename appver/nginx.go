@@ -20,7 +20,7 @@ func nginxNextVersionId() (vi int) {
 }
 
 var nginxVer = []*ver{
-	Ver("1.23.3", "1.23.3", nginxNextVersionId(), ""),
+	Ver("1.23.3", "1.23.3", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
 	Ver("1.22.1", "1.22.1", nginxNextVersionId(), ""),
 	Ver("1.20.2", "1.20.2", nginxNextVersionId(), ""),
 	Ver("1.18.0", "1.18.0", nginxNextVersionId(), ""),
@@ -40,3 +40,4 @@ var Nginx = &struct {
 
 func NginxMinVersion() *ver { return Nginx.Ver[len(Nginx.Ver)-1] }
 func NginxMaxVersion() *ver { return Nginx.Ver[0] }
+func NginxVersion() *ver    { return NginxMaxVersion() }

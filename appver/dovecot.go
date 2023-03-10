@@ -20,7 +20,7 @@ func dovecotNextVersionId() (vi int) {
 }
 
 var dovecotVer = []*ver{
-	Ver("dovecot@2.3.17", "2.3.17", dovecotNextVersionId(), "/logs/duckcp-dovecot.log"),
+	Ver("dovecot@2.3.17", "2.3.17", dovecotNextVersionId(), "/duckcp/logs/duckcp-dovecot.log"),
 }
 
 var Dovecot = &struct {

@@ -9,29 +9,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package app
+package managers
 
-type Status byte
+import _ "embed"
 
-const (
-	StatusUnknown  Status = iota
-	StatusStarted         = 10
-	StatusStarting        = 11
-	StatusStopped         = 20
-	StatusStopping        = 21
+var (
+	//go:embed init.sql
+	sqlFS string
 )
-
-func ParseStatus(v string) Status {
-	switch v {
-	default:
-		return StatusUnknown
-	case "started":
-		return StatusStarted
-	case "starting":
-		return StatusStarting
-	case "stopped":
-		return StatusStopped
-	case "stopping":
-		return StatusStopping
-	}
-}

@@ -11,8 +11,10 @@
 
 package app
 
+import "github.com/whrwsoftware/panelbase/appmanager"
+
 type Checker interface {
-	Check(manager Manager) (ok bool, err error)
+	Check(manager appmanager.Manager) (ok bool, err error)
 }
 
 type Installer interface {
@@ -69,6 +71,8 @@ type Application struct {
 	Controller
 	Configurator
 	Logger
+
+	appmanager.Manager
 }
 
 type BashFS interface {
@@ -77,6 +81,6 @@ type BashFS interface {
 	Reinstall() string
 }
 
-func NewApplication(checker Checker, installer Installer, controller Controller, configurator Configurator, logger Logger) Applicable {
-	return &Application{Checker: checker, Installer: installer, Controller: controller, Configurator: configurator, Logger: logger}
+func NewApplication(checker Checker, installer Installer, controller Controller, configurator Configurator, logger Logger, manager appmanager.Manager) Applicable {
+	return &Application{Checker: checker, Installer: installer, Controller: controller, Configurator: configurator, Logger: logger, Manager: manager}
 }

@@ -20,7 +20,7 @@ func roundcubeNextVersionId() (vi int) {
 }
 
 var roundcubeVer = []*ver{
-	Ver("roundcube@1.6.1", "1.6.1", roundcubeNextVersionId(), "/duckcp/logs/roundcube.log"),
+	Ver("roundcube@1.6.1", "1.6.1", roundcubeNextVersionId(), "/duckcp/logs/duckcp-roundcube.log"),
 }
 
 var Roundcube = &struct {

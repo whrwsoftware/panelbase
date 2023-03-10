@@ -25,8 +25,6 @@ type BashExecutor struct {
 	out []byte
 	ok  bool
 	err error
-
-	debug bool
 }
 
 func NewBashExecutor(cmd string) *BashExecutor {
@@ -70,13 +68,8 @@ func (b *BashExecutor) Run() *BashExecutor {
 	return b
 }
 
-func (b *BashExecutor) Debug() *BashExecutor              { b.debug = true; return b }
-func (b *BashExecutor) SetDebug(debug bool) *BashExecutor { b.debug = debug; return b }
-
 func (b *BashExecutor) Release() (ok bool, err error) {
-	if !b.debug {
-		_ = os.Remove(b.bashFile)
-	}
+	_ = os.Remove(b.bashFile)
 	return b.ok, b.err
 }
 

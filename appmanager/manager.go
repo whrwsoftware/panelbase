@@ -9,27 +9,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package checkers
+package appmanager
 
-import (
-	"github.com/whrwsoftware/panelbase/appmanager"
-)
-
-type CheckFunc func() (ok bool, err error)
-
-type funcChecker struct {
-	CheckFunc []CheckFunc
+type StateManager interface {
+	Installed(appName, version string) (err error)
+	Uninstalled(appName, version string) (err error)
 }
 
-func FuncChecker(CheckFunc ...CheckFunc) *funcChecker { return &funcChecker{CheckFunc} }
+type Manager interface {
+	InfoManager
+	VersionManager
+	StateManager
+}
 
-func (c *funcChecker) Check(appmanager.Manager) (ok bool, err error) {
-	if fns := c.CheckFunc; fns != nil && len(fns) > 0 {
-		for _, fn := range fns {
-			if ok, err = fn(); err != nil || !ok {
-				return false, err
-			}
-		}
-	}
-	return true, nil
+type AppManager struct {
+	InfoManager
+	VersionManager
+	StateManager
+}
+
+func NewAppManager(infoManager InfoManager, versionManager VersionManager, stateManager StateManager) *AppManager {
+	return &AppManager{InfoManager: infoManager, VersionManager: versionManager, StateManager: stateManager}
 }

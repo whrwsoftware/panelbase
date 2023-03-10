@@ -14,6 +14,7 @@ package apps
 import (
 	"github.com/whrwsoftware/panelbase/app"
 	"github.com/whrwsoftware/panelbase/app/configurators"
+	"github.com/whrwsoftware/panelbase/appmanager"
 	"strings"
 )
 
@@ -36,7 +37,7 @@ func NewGroupApp(bundle ...*Bundle) *GroupedApp {
 	return &GroupedApp{bundle, configurators.DefaultConfigurationLoader()}
 }
 
-func (a *GroupedApp) Check(manager app.Manager) (ok bool, err error) {
+func (a *GroupedApp) Check(manager appmanager.Manager) (ok bool, err error) {
 	for _, ba := range a.bundles {
 		if ok, err = ba.Check(manager); err != nil {
 			return

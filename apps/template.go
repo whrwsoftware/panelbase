@@ -13,29 +13,30 @@ package apps
 
 import (
 	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/appmanager"
 	"github.com/whrwsoftware/panelbase/zvars/oss"
 )
 
 type AppTemplate interface {
-	CentOS7() app.Applicable
-	CentOS8() app.Applicable
-	Ubuntu() app.Applicable
-	Debian() app.Applicable
-	Arch() app.Applicable
+	CentOS7(manager appmanager.Manager) app.Applicable
+	CentOS8(manager appmanager.Manager) app.Applicable
+	Ubuntu(manager appmanager.Manager) app.Applicable
+	Debian(manager appmanager.Manager) app.Applicable
+	Arch(manager appmanager.Manager) app.Applicable
 }
 
-func GetApp(appTemplate AppTemplate, os oss.OS) (app app.Applicable) {
+func GetApp(appTemplate AppTemplate, manager appmanager.Manager, os oss.OS) (app app.Applicable) {
 	switch os {
 	case oss.CentOS7:
-		return appTemplate.CentOS7()
+		return appTemplate.CentOS7(manager)
 	case oss.CentOS8:
-		return appTemplate.CentOS8()
+		return appTemplate.CentOS8(manager)
 	case oss.Ubuntu:
-		return appTemplate.Ubuntu()
+		return appTemplate.Ubuntu(manager)
 	case oss.Debian:
-		return appTemplate.Debian()
+		return appTemplate.Debian(manager)
 	case oss.Arch:
-		return appTemplate.Arch()
+		return appTemplate.Arch(manager)
 	}
 	return
 }

@@ -24,14 +24,6 @@ func PackagerInstaller(pkg string, packager Packager, logger app.Logger) *packag
 	return &packagerInstaller{VersionInstaller: BashInstaller(PackagerBashFS(pkg, packager), logger)}
 }
 
-func PackagerInstallerWithDebug(pkg string, packager Packager, logger app.Logger, debug bool) *packagerInstaller {
-	return &packagerInstaller{VersionInstaller: BashInstallerWithDebug(PackagerBashFS(pkg, packager), logger, debug)}
-}
-
-func PackagerInstallerDebug(pkg string, packager Packager, logger app.Logger) *packagerInstaller {
-	return PackagerInstallerWithDebug(pkg, packager, logger, true)
-}
-
 type Packager interface {
 	InstallCmd(pkg string) string
 	UninstallCmd(pkg string) string

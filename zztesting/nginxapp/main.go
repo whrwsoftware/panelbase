@@ -13,11 +13,10 @@ package main
 
 import (
 	"fmt"
-	appConf "github.com/whrwsoftware/panelbase/appconf/roundcube"
-	"github.com/whrwsoftware/panelbase/appmanager"
+	appConf "github.com/whrwsoftware/panelbase/appconf/nginx"
 	"github.com/whrwsoftware/panelbase/appmanager/managers"
 	"github.com/whrwsoftware/panelbase/apps"
-	"github.com/whrwsoftware/panelbase/apps/roundcube"
+	"github.com/whrwsoftware/panelbase/apps/nginx"
 	"github.com/whrwsoftware/panelbase/appver"
 	"github.com/whrwsoftware/panelbase/zvars/oss"
 	"os"
@@ -25,21 +24,17 @@ import (
 
 func main() {
 	manager := managers.SqliteManager("/duckcp/apps/manager/data.db")
-	manager.Add(&appmanager.AppInfo{Name: appver.Nginx.Name})
-	manager.CreateVersion(&appmanager.AppVersion{AppName: appver.Nginx.Name, Version: appver.NginxMinVersion().Version, VersionId: appver.NginxMinVersion().VersionId, Installed: 1})
-	manager.Add(&appmanager.AppInfo{Name: appver.Php.Name})
-	manager.CreateVersion(&appmanager.AppVersion{AppName: appver.Php.Name, Version: appver.Php73Version().Version, VersionId: appver.Php73Version().VersionId, Installed: 1})
 	currentOS := oss.CurrentOS()
-	version := appver.RoundcubeVersion().Version
-	fmt.Println("roundcube control")
+	version := appver.NginxVersion().Version
+	fmt.Println("nginx control")
 	fmt.Println("------")
 	fmt.Println()
 	fmt.Println("current os =>", currentOS)
 	fmt.Println("current version =>", version)
 	fmt.Println()
-	var app = apps.GetApp(roundcube.Template(), manager, currentOS)
+	var app = apps.GetApp(nginx.Template(), manager, currentOS)
 	if app == nil {
-		fmt.Println("roundcube: not support current os")
+		fmt.Println("nginx: not support current os")
 		return
 	}
 
@@ -87,7 +82,7 @@ func main() {
 				break
 			}
 			fmt.Println("end install")
-			fmt.Println("roundcube installed")
+			fmt.Println("nginx installed")
 			break
 		case "12":
 			fmt.Println("start uninstall")
@@ -96,7 +91,7 @@ func main() {
 				break
 			}
 			fmt.Println("end uninstall")
-			fmt.Println("roundcube uninstalled")
+			fmt.Println("nginx uninstalled")
 			break
 		case "13":
 			fmt.Println("start reinstall")
@@ -105,7 +100,7 @@ func main() {
 				break
 			}
 			fmt.Println("end reinstall")
-			fmt.Println("roundcube reinstalled")
+			fmt.Println("nginx reinstalled")
 			break
 
 		case "20":
@@ -115,7 +110,7 @@ func main() {
 				break
 			}
 			fmt.Println("end enable")
-			fmt.Println("roundcube enable")
+			fmt.Println("nginx enable")
 			break
 		case "21":
 			fmt.Println("start disable")
@@ -124,7 +119,7 @@ func main() {
 				break
 			}
 			fmt.Println("end disable")
-			fmt.Println("roundcube disabled")
+			fmt.Println("nginx disabled")
 			break
 		case "22":
 			fmt.Println("start start")
@@ -133,7 +128,7 @@ func main() {
 				break
 			}
 			fmt.Println("end start")
-			fmt.Println("roundcube started")
+			fmt.Println("nginx started")
 			break
 		case "23":
 			fmt.Println("start stop")
@@ -142,7 +137,7 @@ func main() {
 				break
 			}
 			fmt.Println("end stop")
-			fmt.Println("roundcube stopped")
+			fmt.Println("nginx stopped")
 			break
 		case "24":
 			fmt.Println("start restart")
@@ -151,14 +146,14 @@ func main() {
 				break
 			}
 			fmt.Println("end restart")
-			fmt.Println("roundcube restarted")
+			fmt.Println("nginx restarted")
 			break
 		case "25":
 			fmt.Println("start status")
 			st, _, _ := app.Status()
 			fmt.Println(st)
 			fmt.Println("end status")
-			fmt.Println("roundcube status")
+			fmt.Println("nginx status")
 			break
 
 		case "30":
@@ -170,37 +165,24 @@ func main() {
 				break
 			}
 			if err := app.Configure(appConf.ConfBindMap(
-				appConf.OptConfigIncPhp{
-					DbFile:         "/tmp/roundcube.db",
-					ImapHost:       "localhost:143",
-					SmtpHost:       "localhost:25",
-					SupportUrl:     "mail.v8dns.xyz",
-					UsernameDomain: "v8dns.xyz",
-				},
-				appConf.OptRoundcubeConf{
-					ServerName:  "mail.v8dns.xyz",
-					Port:        80,
-					SSLPort:     443,
-					SSL:         false,
-					Root:        "/duckcp/apps/roundcube",
-					FastCgiPass: "localhost:9000",
-				},
+				appConf.OptNginxConf{},
+				appConf.OptConfDDefaultConf{},
 			)); err != nil {
 				fmt.Println(err)
 				break
 			}
 			fmt.Println("end configure")
-			fmt.Println("roundcube configured")
+			fmt.Println("nginx configured")
 			break
 		case "31":
 			fmt.Println("start load")
-			if val, err := app.Load(appConf.DistConfigIncPhp); err != nil {
+			if val, err := app.Load(appConf.DistConfDDefaultConf); err != nil {
 				fmt.Println(err)
 			} else {
 				fmt.Println(val)
 			}
 			fmt.Println("end load")
-			fmt.Println("roundcube loaded")
+			fmt.Println("nginx loaded")
 			break
 		case "32":
 			fmt.Println("start clean")
@@ -208,7 +190,7 @@ func main() {
 				fmt.Println(err)
 			}
 			fmt.Println("end clean")
-			fmt.Println("roundcube cleaned")
+			fmt.Println("nginx cleaned")
 			break
 
 		case "90":
@@ -219,7 +201,7 @@ func main() {
 				fmt.Println(string(logBuf))
 			}
 			fmt.Println("end cat")
-			fmt.Println("roundcube cut")
+			fmt.Println("nginx cut")
 			break
 		case "91":
 			fmt.Println("start truncate")
@@ -227,13 +209,13 @@ func main() {
 				fmt.Println(err)
 			}
 			fmt.Println("end truncate")
-			fmt.Println("roundcube truncated")
+			fmt.Println("nginx truncated")
 			break
 		case "92":
 			fmt.Println("start pwd")
 			fmt.Println(app.File())
 			fmt.Println("end pwd")
-			fmt.Println("roundcube pwd")
+			fmt.Println("nginx pwd")
 			break
 
 		case "q":
