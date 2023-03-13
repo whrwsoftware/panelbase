@@ -12,7 +12,10 @@
 package latest
 
 import (
+	"bytes"
 	_ "embed"
+	"github.com/whrwsoftware/panelbase/zvars/oss"
+	"text/template"
 )
 
 var (
@@ -22,12 +25,17 @@ var (
 	uninstall string
 	//go:embed reinstall.sh
 	reinstall string
-
-	FS = &fs{}
 )
 
-type fs struct{}
+type fs struct{ oss.OS }
 
-func (f *fs) Install() string   { return install }
-func (f *fs) Uninstall() string { return uninstall }
-func (f *fs) Reinstall() string { return reinstall }
+func FS(OS oss.OS) *fs          { return &fs{OS: OS} }
+func (f *fs) Install() string   { return f.exec(install) }
+func (f *fs) Uninstall() string { return f.exec(uninstall) }
+func (f *fs) Reinstall() string { return f.exec(reinstall) }
+func (f *fs) exec(tpl string) string {
+	tt, _ := template.New("").Parse(tpl)
+	var w bytes.Buffer
+	_ = tt.Execute(&w, f)
+	return w.String()
+}

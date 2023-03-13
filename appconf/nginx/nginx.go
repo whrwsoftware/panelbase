@@ -13,7 +13,6 @@ package nginx
 
 import (
 	"embed"
-	_ "embed"
 	"github.com/whrwsoftware/panelbase/appconf"
 	"os"
 )

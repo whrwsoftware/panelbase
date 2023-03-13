@@ -24,11 +24,9 @@ var dovecotVer = []*ver{
 }
 
 var Dovecot = &struct {
-	Name        string
-	Provider    string
-	Description string
-	Ver         []*ver
-}{"dovecot", "官方", "", dovecotVer}
+	Name string
+	Ver  []*ver
+}{"dovecot", dovecotVer}
 
 func DovecotMinVersion() *ver { return Dovecot.Ver[len(Dovecot.Ver)-1] }
 func DovecotMaxVersion() *ver { return Dovecot.Ver[0] }

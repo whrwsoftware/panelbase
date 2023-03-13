@@ -24,11 +24,9 @@ var postfixVer = []*ver{
 }
 
 var Postfix = &struct {
-	Name        string
-	Provider    string
-	Description string
-	Ver         []*ver
-}{"postfix", "官方", "", postfixVer}
+	Name string
+	Ver  []*ver
+}{"postfix", postfixVer}
 
 func PostfixMinVersion() *ver { return Postfix.Ver[len(Postfix.Ver)-1] }
 func PostfixMaxVersion() *ver { return Postfix.Ver[0] }

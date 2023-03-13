@@ -21,6 +21,7 @@ import (
 	"github.com/whrwsoftware/panelbase/appconf/dovecot"
 	"github.com/whrwsoftware/panelbase/apps/dovecot/latest"
 	"github.com/whrwsoftware/panelbase/appver"
+	"github.com/whrwsoftware/panelbase/zvars/oss"
 )
 
 var (
@@ -30,5 +31,7 @@ var (
 	logger       = loggers.File(curVer.LogFile)
 	configurator = configurators.DefaultConfigurator(dovecot.ConfBinds)
 	controller   = controllers.Systemctl(name, logger)
-	installer    = map[string]app.VersionInstaller{curVer.Version: installers.BashInstaller(latest.FS, logger)}
+	getInstaller = func(os oss.OS) app.Installer {
+		return installers.Versioned(map[string]app.VersionInstaller{curVer.Version: installers.BashInstaller(latest.FS(os), logger)})
+	}
 )

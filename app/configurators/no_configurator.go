@@ -13,7 +13,8 @@ package configurators
 
 type noConfigurator struct{}
 
-func NoConfigurator() *noConfigurator                            { return &noConfigurator{} }
-func (n *noConfigurator) Configure(_ map[string]any) (err error) { return nil }
-func (n *noConfigurator) Load(name string) (v string, err error) { return "", nil }
-func (n *noConfigurator) Clean() (err error)                     { return nil }
+func NoConfigurator() *noConfigurator                                 { return &noConfigurator{} }
+func (n *noConfigurator) Configure(map[string]any) (err error)        { return nil }
+func (n *noConfigurator) ConfigureFile(map[string]string) (err error) { return nil }
+func (n *noConfigurator) Load(string) (v string, err error)           { return "", nil }
+func (n *noConfigurator) Clean() (err error)                          { return nil }

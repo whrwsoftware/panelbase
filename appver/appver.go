@@ -13,11 +13,17 @@ package appver
 
 type ver struct {
 	Pkg       string
+	Service   string
 	Version   string
 	VersionId int
+	VersionV  int
 	LogFile   string
 }
 
 func Ver(pkg, version string, versionId int, logFile string) *ver {
-	return &ver{pkg, version, versionId, logFile}
+	return &ver{Pkg: pkg, Version: version, VersionId: versionId, LogFile: logFile}
+}
+
+func VerVV(pkg string, service string, version string, versionId int, versionV int, logFile string) *ver {
+	return &ver{Pkg: pkg, Service: service, Version: version, VersionId: versionId, VersionV: versionV, LogFile: logFile}
 }

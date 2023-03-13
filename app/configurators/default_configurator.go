@@ -57,6 +57,17 @@ func (d *defaultConfigurator) Configure(m map[string]any) (err error) {
 	return
 }
 
+func (d *defaultConfigurator) ConfigureFile(m map[string]string) (err error) {
+	for k, v := range m {
+		if confFile, ok := d.ConfBindM[k]; ok {
+			if err = os.WriteFile(confFile.Dist, []byte(v), confFile.Perm); err != nil {
+				return
+			}
+		}
+	}
+	return
+}
+
 func (d *defaultConfigurator) Load(name string) (v string, err error) { return d.Loader.Load(name) }
 
 func (d *defaultConfigurator) Clean() (err error) { return d.Cleaner.Clean() }

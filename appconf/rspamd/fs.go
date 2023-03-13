@@ -9,29 +9,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package postfix
-
-import (
-	_ "embed"
-	"github.com/whrwsoftware/panelbase/appconf"
-)
-
-var (
-	//go:embed main.cf
-	FSMainCf string
-)
-
-const (
-	NameMainCf = "main.cf"
-	DistMainCf = "/etc/postfix/main.cf"
-)
-
-type Opt struct {
-	MyHostname string
-	MyDomain   string
-	MyOrigin   string
-}
-
-var (
-	GenMainCf = appconf.Gen[Opt]
-)
+package rspamd

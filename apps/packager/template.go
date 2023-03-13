@@ -23,22 +23,26 @@ type template struct {
 
 func Template(pkg string) *template { return &template{Pkg: pkg} }
 
+func (t *template) getApp(manager appmanager.Manager, os oss.OS) app.Applicable {
+	return app.NewApplication(checker, installer(t.Pkg, os, logger), controller, configurator, logger, manager)
+}
+
 func (t *template) CentOS7(manager appmanager.Manager) app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.CentOS7, logger), controller, configurator, logger, manager)
+	return t.getApp(manager, oss.CentOS7)
 }
 
 func (t *template) CentOS8(manager appmanager.Manager) app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.CentOS8, logger), controller, configurator, logger, manager)
+	return t.getApp(manager, oss.CentOS8)
 }
 
 func (t *template) Ubuntu(manager appmanager.Manager) app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.Ubuntu, logger), controller, configurator, logger, manager)
+	return t.getApp(manager, oss.Ubuntu)
 }
 
 func (t *template) Debian(manager appmanager.Manager) app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.Debian, logger), controller, configurator, logger, manager)
+	return t.getApp(manager, oss.Debian)
 }
 
 func (t *template) Arch(manager appmanager.Manager) app.Applicable {
-	return app.NewApplication(checker, installer(t.Pkg, oss.Arch, logger), controller, configurator, logger, manager)
+	return t.getApp(manager, oss.Arch)
 }

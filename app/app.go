@@ -40,6 +40,7 @@ type Controller interface {
 
 type Configurator interface {
 	Configure(m map[string]any) (err error)
+	ConfigureFile(m map[string]string) (err error)
 	ConfigurationLoader
 	ConfigurationCleaner
 }

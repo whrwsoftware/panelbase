@@ -13,31 +13,34 @@ package postfix
 
 import (
 	"github.com/whrwsoftware/panelbase/app"
-	"github.com/whrwsoftware/panelbase/app/installers"
 	"github.com/whrwsoftware/panelbase/appmanager"
+	"github.com/whrwsoftware/panelbase/zvars/oss"
 )
 
 type template struct{}
 
 func Template() *template { return &template{} }
 
-func (t *template) CentOS7(manager appmanager.Manager) app.Applicable {
-	return app.NewApplication(checker, installers.Versioned(installer), controller, configurator, logger, manager)
+func (t *template) getApp(manager appmanager.Manager, os oss.OS) app.Applicable {
+	return app.NewApplication(checker, getInstaller(os), controller, configurator, logger, manager)
 }
 
-func (t *template) CentOS8(manager appmanager.Manager) app.Applicable { return t.CentOS7(manager) }
+func (t *template) CentOS7(manager appmanager.Manager) app.Applicable {
+	return t.getApp(manager, oss.CentOS7)
+}
+
+func (t *template) CentOS8(manager appmanager.Manager) app.Applicable {
+	return t.getApp(manager, oss.CentOS8)
+}
 
 func (t *template) Ubuntu(manager appmanager.Manager) app.Applicable {
-	//TODO implement me
-	panic("implement me")
+	return t.getApp(manager, oss.Ubuntu)
 }
 
 func (t *template) Debian(manager appmanager.Manager) app.Applicable {
-	//TODO implement me
-	panic("implement me")
+	return t.getApp(manager, oss.Debian)
 }
 
 func (t *template) Arch(manager appmanager.Manager) app.Applicable {
-	//TODO implement me
-	panic("implement me")
+	return t.getApp(manager, oss.Arch)
 }

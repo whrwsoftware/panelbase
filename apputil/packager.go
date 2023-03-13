@@ -13,11 +13,12 @@ package apputil
 
 import (
 	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/appmanager"
 	"github.com/whrwsoftware/panelbase/apps"
 	"github.com/whrwsoftware/panelbase/apps/packager"
 	"github.com/whrwsoftware/panelbase/zvars/oss"
 )
 
-func GetPackagerApp(pkg string) app.Applicable {
-	return apps.GetApp(packager.Template(pkg), oss.CurrentOS())
+func GetPackagerApp(pkg string, manager appmanager.Manager) app.Applicable {
+	return apps.GetApp(packager.Template(pkg), manager, oss.CurrentOS())
 }

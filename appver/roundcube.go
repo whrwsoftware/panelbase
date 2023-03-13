@@ -24,11 +24,9 @@ var roundcubeVer = []*ver{
 }
 
 var Roundcube = &struct {
-	Name        string
-	Provider    string
-	Description string
-	Ver         []*ver
-}{"roundcube", "官方", "", roundcubeVer}
+	Name string
+	Ver  []*ver
+}{"roundcube", roundcubeVer}
 
 func RoundcubeMinVersion() *ver { return Roundcube.Ver[len(Roundcube.Ver)-1] }
 func RoundcubeMaxVersion() *ver { return Roundcube.Ver[0] }

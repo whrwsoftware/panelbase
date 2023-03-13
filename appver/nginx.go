@@ -21,22 +21,20 @@ func nginxNextVersionId() (vi int) {
 
 var nginxVer = []*ver{
 	Ver("1.23.3", "1.23.3", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
-	Ver("1.22.1", "1.22.1", nginxNextVersionId(), ""),
-	Ver("1.20.2", "1.20.2", nginxNextVersionId(), ""),
-	Ver("1.18.0", "1.18.0", nginxNextVersionId(), ""),
-	Ver("1.16.1", "1.16.1", nginxNextVersionId(), ""),
-	Ver("1.14.2", "1.14.2", nginxNextVersionId(), ""),
-	Ver("1.12.2", "1.12.2", nginxNextVersionId(), ""),
-	Ver("1.10.3", "1.10.3", nginxNextVersionId(), ""),
-	Ver("1.8.1", "1.8.1", nginxNextVersionId(), ""),
+	Ver("1.22.1", "1.22.1", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
+	Ver("1.20.2", "1.20.2", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
+	Ver("1.18.0", "1.18.0", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
+	Ver("1.16.1", "1.16.1", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
+	Ver("1.14.2", "1.14.2", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
+	Ver("1.12.2", "1.12.2", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
+	Ver("1.10.3", "1.10.3", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
+	Ver("1.8.1", "1.8.1", nginxNextVersionId(), "/duckcp/logs/duckcp-nginx.log"),
 }
 
 var Nginx = &struct {
-	Name        string
-	Provider    string
-	Description string
-	Ver         []*ver
-}{"nginx", "官方", "", nginxVer}
+	Name string
+	Ver  []*ver
+}{"nginx", nginxVer}
 
 func NginxMinVersion() *ver { return Nginx.Ver[len(Nginx.Ver)-1] }
 func NginxMaxVersion() *ver { return Nginx.Ver[0] }

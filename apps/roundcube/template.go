@@ -21,23 +21,24 @@ type template struct{}
 
 func Template() *template { return &template{} }
 
-func (t *template) CentOS7(manager appmanager.Manager) app.Applicable {
+func (t *template) getApp(manager appmanager.Manager) app.Applicable {
 	return app.NewApplication(checker, installers.Versioned(installer), controller, configurator, logger, manager)
 }
 
-func (t *template) CentOS8(manager appmanager.Manager) app.Applicable { return t.CentOS7(manager) }
+func (t *template) CentOS7(manager appmanager.Manager) app.Applicable {
+	return t.getApp(manager)
+}
+
+func (t *template) CentOS8(manager appmanager.Manager) app.Applicable { return t.getApp(manager) }
 
 func (t *template) Ubuntu(manager appmanager.Manager) app.Applicable {
-	//TODO implement me
-	panic("implement me")
+	return t.getApp(manager)
 }
 
 func (t *template) Debian(manager appmanager.Manager) app.Applicable {
-	//TODO implement me
-	panic("implement me")
+	return t.getApp(manager)
 }
 
 func (t *template) Arch(manager appmanager.Manager) app.Applicable {
-	//TODO implement me
-	panic("implement me")
+	return t.getApp(manager)
 }

@@ -126,6 +126,7 @@ func (a *GroupedApp) Status() (st string, ok bool, err error) {
 	}
 	return "", true, nil
 }
+
 func (a *GroupedApp) Configure(m map[string]any) (err error) {
 	if m != nil || len(m) <= 0 {
 		return nil
@@ -141,6 +142,8 @@ func (a *GroupedApp) Configure(m map[string]any) (err error) {
 	}
 	return
 }
+
+func (a *GroupedApp) ConfigureFile(map[string]string) (err error) { return nil }
 
 func (a *GroupedApp) File() string {
 	var files []string

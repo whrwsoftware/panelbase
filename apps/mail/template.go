@@ -13,6 +13,7 @@ package mail
 
 import (
 	"github.com/whrwsoftware/panelbase/app"
+	"github.com/whrwsoftware/panelbase/appmanager"
 	"github.com/whrwsoftware/panelbase/apps"
 	"github.com/whrwsoftware/panelbase/appver"
 	"github.com/whrwsoftware/panelbase/zvars/oss"
@@ -26,29 +27,33 @@ func Template(postfixAppTemplate, dovecotAppTemplate, roundcubeAppTemplate apps.
 	return &template{postfixAppTemplate, dovecotAppTemplate, roundcubeAppTemplate}
 }
 
-func (t *template) CentOS7() app.Applicable {
+func (t *template) getApp(manager appmanager.Manager, os oss.OS) app.Applicable {
 	return NewApp(
-		apps.GetApp(t.PostfixAppTemplate, oss.CentOS7),
-		apps.GetApp(t.DovecotAppTemplate, oss.CentOS7),
-		apps.GetApp(t.RoundcubeAppTemplate, oss.CentOS7),
+		apps.GetApp(t.PostfixAppTemplate, manager, os),
+		apps.GetApp(t.DovecotAppTemplate, manager, os),
+		apps.GetApp(t.RoundcubeAppTemplate, manager, os),
 		appver.PostfixVersion().Version,
 		appver.DovecotVersion().Version,
 		appver.RoundcubeMaxVersion().Version,
 	)
 }
-func (t *template) CentOS8() app.Applicable { return t.CentOS7() }
 
-func (t *template) Ubuntu() app.Applicable {
-	//TODO implement me
-	panic("implement me")
+func (t *template) CentOS7(manager appmanager.Manager) app.Applicable {
+	return t.getApp(manager, oss.CentOS7)
 }
 
-func (t *template) Debian() app.Applicable {
-	//TODO implement me
-	panic("implement me")
+func (t *template) CentOS8(manager appmanager.Manager) app.Applicable {
+	return t.getApp(manager, oss.CentOS8)
 }
 
-func (t *template) Arch() app.Applicable {
-	//TODO implement me
-	panic("implement me")
+func (t *template) Ubuntu(manager appmanager.Manager) app.Applicable {
+	return t.getApp(manager, oss.Ubuntu)
+}
+
+func (t *template) Debian(manager appmanager.Manager) app.Applicable {
+	return t.getApp(manager, oss.Debian)
+}
+
+func (t *template) Arch(manager appmanager.Manager) app.Applicable {
+	return t.getApp(manager, oss.Arch)
 }
